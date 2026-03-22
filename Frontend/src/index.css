@@ -5,3 +5,17 @@
 .crd{
     max-width: 18rem;
 }
+html::-webkit-scrollbar {
+  display: none;
+}
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.fcrd{
+  max-width: 20rem;
+}
+.fim{
+    max-width:350px;
+    max-height: 150px;
+}

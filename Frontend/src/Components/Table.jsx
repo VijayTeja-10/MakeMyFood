@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Dishes from './Dishes'
 
 const Table = (props) => {
     let count=0
