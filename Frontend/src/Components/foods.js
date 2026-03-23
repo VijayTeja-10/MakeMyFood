@@ -5,6 +5,8 @@ const FoodPlaces = [
     "desc": "Famous for its slow-cooked dum biryani and Mughlai delicacies.",
     "phone": "+91-9001122334",
     "isRes": true,
+    "tables": 20,
+    "seats": 4,
     "items": [
       {
         "name": "Chicken Dum Biryani",
@@ -28,6 +30,8 @@ const FoodPlaces = [
     "desc": "Organic food market with fresh fruits, vegetables, and eco-friendly products.",
     "phone": "+91-9055667788",
     "isRes": false,
+    "tables": 0,
+    "seats": 0,
     "items": [
       {
         "name": "Farm Fresh Apples",
@@ -51,6 +55,8 @@ const FoodPlaces = [
     "desc": "Authentic Indian cuisine with a modern twist, specializing in biryanis and tandoori dishes.",
     "phone": "+91-9876543210",
     "isRes": true,
+    "tables": 15,
+    "seats": 4,
     "items": [
       {
         "name": "Tandoori Chicken Half",
@@ -74,6 +80,8 @@ const FoodPlaces = [
     "desc": "Bakery shop with artisan breads, cakes, and pastries baked fresh daily.",
     "phone": "+91-9022334455",
     "isRes": true,
+    "tables": 8,
+    "seats": 2,
     "items": [
       {
         "name": "Dark Chocolate Truffle Cake",
@@ -97,6 +105,8 @@ const FoodPlaces = [
     "desc": "Store dedicated to dairy products including milk, yogurt, butter, and cheese.",
     "phone": "+91-9044556677",
     "isRes": false,
+    "tables": 0,
+    "seats": 0,
     "items": [
       {
         "name": "Whole Organic Milk",
@@ -120,6 +130,8 @@ const FoodPlaces = [
     "desc": "Healthy vegetarian and vegan options with organic ingredients and smoothie bowls.",
     "phone": "+91-9988776655",
     "isRes": true,
+    "tables": 12,
+    "seats": 2,
     "items": [
       {
         "name": "Superfood Salad Bowl",
@@ -143,6 +155,8 @@ const FoodPlaces = [
     "desc": "Butcher shop specializing in fresh meats, sausages, and premium cuts.",
     "phone": "+91-9033445566",
     "isRes": false,
+    "tables": 0,
+    "seats": 0,
     "items": [
       {
         "name": "Premium Ribeye Steak",
@@ -166,6 +180,8 @@ const FoodPlaces = [
     "desc": "A cozy seaside café offering continental breakfast, fresh seafood, and artisanal coffee.",
     "phone": "+91-9123456780",
     "isRes": true,
+    "tables": 10,
+    "seats": 4,
     "items": [
       {
         "name": "Artisanal Cappuccino",
@@ -189,6 +205,8 @@ const FoodPlaces = [
     "desc": "Modern grocery store offering fresh produce, packaged goods, and household essentials.",
     "phone": "+91-9011223344",
     "isRes": false,
+    "tables": 0,
+    "seats": 0,
     "items": [
       {
         "name": "Farm Fresh Eggs (Dozen)",

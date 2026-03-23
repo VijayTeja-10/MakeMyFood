@@ -8,9 +8,9 @@ const Items = ({items,name}) => {
             return <button href="#" className="btn btn-warning ms-auto disabled" >N/A</button>
         }
     }
+
   return (
     <>
-    <h1 class='d-flex justify-content-center m-2'>Welcome to {name}</h1>
     <div class='d-flex flex-wrap'>
         {
             items.map((item)=>(

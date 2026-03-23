@@ -7,6 +7,9 @@ const Display = () => {
     const [mainScreen,Setmain]=useState(true)
     const [food,Setitems]=useState([])
     const [placename,Setplace]=useState('')
+    const [isRes,Setres]=useState(false)
+    const [tables,Settables]=useState(0)
+    const [seats,Setseats]=useState(0)
     const fetch= async ()=>{
         try{
         const response= await axios.get('http://127.0.0.1:8000/api/restaurants/')
@@ -30,7 +33,10 @@ const Display = () => {
 
     }
 
-    const showMenu=(food,name)=>{
+    const showMenu=(food,name,Res,tables,seats)=>{
+        Setres(Res)
+        Settables(tables)
+        Setseats(seats)
         Setmain(!mainScreen)
         Setitems(food)
         Setplace(name)
@@ -53,7 +59,7 @@ const Display = () => {
                                 <h5 className="card-title">{place.name}</h5>
                                 <p className="card-text">{place.desc} <br /><b>Phone :</b>{place.phone}</p>
                                 <div className="d-flex justify-content-center">
-                                    <button onClick={()=>{showMenu(place.items,place.name)}} className="btn btn-warning">{Menu(place.isRes)}</button>
+                                    <button onClick={()=>{showMenu(place.items,place.name,place.isRes,place.tables,place.seats)}} className="btn btn-warning">{Menu(place.isRes)}</button>
                                 </div>
                             </div>
                             </div>
@@ -63,12 +69,20 @@ const Display = () => {
         </>)
     }
 
+    const ItemTables=(isRes)=>{
+        if(isRes){
+            return <><h1 class='d-flex justify-content-center text-warning m-2'>Welcome to {placename}</h1><Items items={food} name={placename}/><h3 className='text-center'>Book your Seats</h3><Table tables={tables} seats={seats} /></>
+        }else{
+            return (<div><h1 class='d-flex justify-content-center text-warning m-2'>Welcome to {placename}</h1><Items items={food} name={placename}/></div>)
+        }
+    }
+
     const Screen=()=>{
         console.log(mainScreen)
         if(mainScreen){
             return (showMain())
         }else{
-            return (<div><Items items={food} name={placename}/></div>)
+            return (ItemTables(isRes))
         }
     }
 
