@@ -71,9 +71,9 @@ const Display = () => {
 
     const ItemTables=(isRes)=>{
         if(isRes){
-            return <><h1 class='d-flex justify-content-center text-warning m-2'>Welcome to {placename}</h1><Items items={food} name={placename}/><h3 className='text-center'>Book your Seats</h3><Table tables={tables} seats={seats} /></>
+            return <><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Table tables={tables} seats={seats} menu={<Items items={food} name={placename}/>} /></>
         }else{
-            return (<div><h1 class='d-flex justify-content-center text-warning m-2'>Welcome to {placename}</h1><Items items={food} name={placename}/></div>)
+            return (<div><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Items items={food} name={placename}/></div>)
         }
     }
 
@@ -103,20 +103,17 @@ const Display = () => {
                     <li className="nav-item">
                     <a className="nav-link" href="#">My Orders</a>
                     </li>
-                    <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Filter by
-                    </a>
-                    <ul className="dropdown-menu">
-                        <li><a className="dropdown-item" href="#">Restaurants</a></li>
-                        <li><a className="dropdown-item" href="#">Retailer Stores</a></li>
-                        <li><a className="dropdown-item" href="#">Dishes</a></li>
-                    </ul>
+                    <li className="nav-item">
+                    <a className="nav-link" href="#">Restaurants</a>
                     </li>
+                    <li className="nav-item">
+                    <a className="nav-link" href="#">Take away Stores</a>
+                    </li>
+                    
                 </ul>
-                <form className="d-flex col col-lg-0 ms-auto me-auto" role="search">
+                <form className="d-flex col col-lg-0 ms-2 me-5" role="search">
                     <input className="form-control me-1" type="search" placeholder="Search" aria-label="Search"/>
-                    <button className="btn btn-outline-success" type="submit">🔍︎</button>
+                    <button className="btn btn-outline-danger" type="submit">🔍︎</button>
                 </form>
                 </div>
             </div>

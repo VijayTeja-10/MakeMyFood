@@ -22,3 +22,12 @@ html {
 .tab{
   max-width: 250px;
 }
+.muted{
+  background-color: #FFEFD4;
+}
+.gentext{
+  color: rgb(106, 52, 52);
+}
+.tables{
+  background-color: #cce2cb;
+}
