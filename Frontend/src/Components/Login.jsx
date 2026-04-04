@@ -6,7 +6,7 @@ const Login = () => {
     const handleLogin=(e)=>{
         e.preventDefault()
         try{
-            navi('explore')
+            navi('/explore')
         }catch(er){
             console.log(er)
         }        

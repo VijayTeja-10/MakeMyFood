@@ -22,6 +22,11 @@ const FoodPlaces = [
         "price": 420,
         "instock": true
       }
+    ],
+    "reviews": [
+      "The best authentic dum biryani in town!",
+      "Mutton kebabs were incredibly juicy.",
+      "A bit crowded on weekends, but worth the wait."
     ]
   },
   {
@@ -47,6 +52,10 @@ const FoodPlaces = [
         "price": 450,
         "instock": false
       }
+    ],
+    "reviews": [
+      "Fresh produce and very friendly staff.",
+      "Love the eco-friendly packaging they use."
     ]
   },
   {
@@ -72,6 +81,10 @@ const FoodPlaces = [
         "price": 60,
         "instock": true
       }
+    ],
+    "reviews": [
+      "The garlic naan is so soft!",
+      "Perfect spice levels in the tandoori chicken."
     ]
   },
   {
@@ -97,6 +110,10 @@ const FoodPlaces = [
         "price": 120,
         "instock": true
       }
+    ],
+    "reviews": [
+      "The croissants are just like the ones in Paris.",
+      "Truffle cake is a must-buy for birthdays!"
     ]
   },
   {
@@ -122,6 +139,10 @@ const FoodPlaces = [
         "price": 320,
         "instock": false
       }
+    ],
+    "reviews": [
+      "Quality of milk is superior to branded packets.",
+      "Wish they had more varieties of cheese in stock."
     ]
   },
   {
@@ -147,6 +168,10 @@ const FoodPlaces = [
         "price": 210,
         "instock": true
       }
+    ],
+    "reviews": [
+      "Finally a place that makes healthy food taste good!",
+      "The Berry Blast is my post-workout favorite."
     ]
   },
   {
@@ -172,6 +197,10 @@ const FoodPlaces = [
         "price": 280,
         "instock": true
       }
+    ],
+    "reviews": [
+      "Very hygienic and the cuts are very precise.",
+      "The ribeye was world-class."
     ]
   },
   {
@@ -197,6 +226,10 @@ const FoodPlaces = [
         "price": 450,
         "instock": true
       }
+    ],
+    "reviews": [
+      "Perfect spot for a morning coffee by the sea.",
+      "Fish was super fresh and flaky."
     ]
   },
   {
@@ -222,6 +255,10 @@ const FoodPlaces = [
         "price": 55,
         "instock": true
       }
+    ],
+    "reviews": [
+      "Quick checkout and well-organized aisles.",
+      "Reliable place for daily essentials."
     ]
   }
 ];
