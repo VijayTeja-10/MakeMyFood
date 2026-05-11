@@ -6,20 +6,23 @@ import SignUp from './Components/SignUp'
 import {Route,Routes,BrowserRouter} from 'react-router-dom'
 import Account from './Components/Account'
 import Orders from './Components/Orders'
-
-
+import PrivateRoutes from './Components/PrivateRoutes'
+import AuthProvider from './Components/AuthProvider'
+import PublicRoutes from './Components/PublicRoutes'
 function App() {  
   return (
     <>
+    <AuthProvider>    
       <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Login />}/>
-        <Route path='/signup' element={<SignUp />} />
-        <Route path='/explore' element={<Display />} />
-        <Route path='/accounts' element={<Account />} />
-        <Route path='/orders' element={<Orders />} />
+        <Route path='/' element={<PublicRoutes> <Login /> </PublicRoutes>} />
+        <Route path='/signup' element={<PublicRoutes> <SignUp /> </PublicRoutes>} />
+        <Route path='/explore' element={<PrivateRoutes> <Display /> </PrivateRoutes>} />
+        <Route path='/accounts' element={<PrivateRoutes> <Account /> </PrivateRoutes>} />
+        <Route path='/orders' element={<PrivateRoutes> <Orders /> </PrivateRoutes>} />
       </Routes>
       </BrowserRouter>
+    </AuthProvider>
     </>
   )
 }

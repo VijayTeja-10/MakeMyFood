@@ -1,18 +1,17 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password,check_password
+from django.contrib.auth.models import AbstractUser
+
 # Create your models here.
-class GlobalUser(models.Model):
-    name=models.CharField(max_length=255)
-    password=models.CharField(max_length=100)
+class GlobalUser(AbstractUser):
+    username = models.CharField(max_length=255)
     email=models.EmailField(unique=True)
     phone=models.BigIntegerField(unique=True)
     isManager=models.BooleanField(default=False)
-    def save(self,*args,**kwargs):
-        self.password=make_password(self.password)
-        super().save()
+    USERNAME_FIELD='email'
+    REQUIRED_FIELDS=['username','phone']
 
     def __str__(self):
-        return str(self.name)
+        return str(self.username)
 
 class Restaurant(models.Model):
     name=models.CharField(max_length=255)

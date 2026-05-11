@@ -41,3 +41,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=GlobalUser
         fields='__all__'
+        extra_kwargs={'password':{'write_only':True}}
+
+    def create(self,validated_data): #ensures password hashing
+        return GlobalUser.objects.create_user(**validated_data)

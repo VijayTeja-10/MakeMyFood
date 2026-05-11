@@ -1,15 +1,30 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import Go from './Go'
 import {useNavigate} from 'react-router-dom'
+import axios from 'axios'
+import { Authorization } from './AuthProvider'
 const Login = () => {
     const navi=useNavigate()
-    const handleLogin=(e)=>{
+    const {isLogged,setLog}=useContext(Authorization)
+    const [email,setEmail]=useState('')
+    const [password,setPass]=useState('')
+    const handleLogin=async (e)=>{
         e.preventDefault()
+        let userdata={email:email,password:password}
         try{
+            const response=await axios.post('http://127.0.0.1:8000/api/token/',userdata)
+            localStorage.setItem('AccessToken',response.data.access)
+            localStorage.setItem('RefreshToken',response.data.refresh)
+            setLog(true)
             navi('/explore')
         }catch(er){
             console.log(er)
-        }        
+            if(er.code==='ERR_BAD_REQUEST'){alert('Invalid Credentials')}
+        }finally{
+            userdata={}
+            setEmail('')
+            setPass('')
+        }
     }
   return (
     <>
@@ -19,12 +34,12 @@ const Login = () => {
             <div>
                 <div className="mb-3">
                 <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="exampleFormControlInput1" placeholder="name@example.com"/>
+                <input type="email" className="form-control"  onChange={(e)=>{setEmail(e.target.value)}} value={email} id="exampleFormControlInput1"/>
                 </div>
             </div>
             <div>
                 <label htmlFor="inputPassword5" className="form-label">Password</label>
-                <input type="password" id="inputPassword5" className="form-control" aria-describedby="passwordHelpBlock"/>
+                <input type="password" id="inputPassword5" className="form-control" onChange={(e)=>{setPass(e.target.value)}} value={password} aria-describedby="passwordHelpBlock"/>
                 <div id="passwordHelpBlock" className="form-text">
                 Your password must be 8-20 characters long, contain letters and numbers, and special characters.
                 </div>

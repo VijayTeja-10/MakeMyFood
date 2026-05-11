@@ -1,7 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Authorization} from './AuthProvider'
+import { Profile } from './PrivateRoutes'
 const Account = () => {
+    const {profile,setProfile}=useContext(Profile)
     const navi=useNavigate()
+    const {isLogged,setLog}=useContext(Authorization)
     const [edit,SetEdit]=useState('disabled')
     const back=(e)=>{
         e.preventDefault()
@@ -9,8 +13,13 @@ const Account = () => {
     }
     const signout=(e)=>{
         e.preventDefault()
+        localStorage.removeItem('AccessToken')
+        localStorage.removeItem('RefreshToken')
+        localStorage.removeItem('Profile')
+        setLog(false)
         navi('/')
     }
+    console.log('account',profile)
 
   return (
     <>
@@ -19,17 +28,23 @@ const Account = () => {
             <div className='d-flex'>
                 <legend className='text-center'>Your Account</legend>
                 <button className='text-danger btn btn-close pb' onClick={back}></button>
-            </div>        
+            </div>
+            <div>
+                <div className={`mb-3 ${edit}`}>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Username</label>
+                <input type="email" className="form-control" id="exampleFormControlInput1" value={profile.username}/>
+                </div>
+            </div>
             <div>
                 <div className={`mb-3 ${edit}`}>
                 <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="exampleFormControlInput1" placeholder="name@example.com"/>
+                <input type="email" className="form-control" id="exampleFormControlInput1" value={profile.email}/>
                 </div>
             </div>
             <div>
                 <div className="mb-3">
                 <label htmlFor="Input2" className="form-label">Phone Number</label>
-                <input type="text" className="form-control" id="Input2" placeholder="+91-XXXXXXXXXX"/>
+                <input type="text" className="form-control" id="Input2" value={profile.phone}/>
                 </div>
             </div>
             <div>
