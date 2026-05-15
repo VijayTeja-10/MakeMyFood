@@ -45,3 +45,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self,validated_data): #ensures password hashing
         return GlobalUser.objects.create_user(**validated_data)
+    
+    def update(self, instance, validated_data):
+        password=validated_data.pop('password',None)
+        if password:instance.set_password(password) #built in
+        return super().update(instance, validated_data) #updates other fields along with password

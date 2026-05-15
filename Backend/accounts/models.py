@@ -21,8 +21,9 @@ class Restaurant(models.Model):
     image=models.URLField(default=None,null=True,blank=True)
     location=models.URLField()
     isRes=models.BooleanField(default=False)
-    pin=models.IntegerField() #postalcode
-    manager=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='manager')
+    pincode=models.IntegerField() #postalcode
+    gstId=models.CharField(max_length=15,unique=True)
+    manager=models.OneToOneField(GlobalUser,on_delete=models.CASCADE,related_name='restaurant')
 
     def __str__(self):
         return self.name
@@ -57,3 +58,12 @@ class Reviews(models.Model):
 
     def __str__(self):
         return self.user
+    
+class Orders(models.Model):
+    buyer=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='user')
+    seller=models.ForeignKey(Restaurant,on_delete=models.CASCADE,related_name='restaurant')
+    items=models.JSONField(default=dict)
+    seats=models.JSONField(default=list)
+    bill=models.FloatField()
+    date=models.DateField(auto_now_add=True)
+    paid=models.BooleanField(default=False)

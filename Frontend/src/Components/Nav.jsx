@@ -12,7 +12,7 @@ const Nav = (prop) => {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mb-2 mb-lg-0">
                     <li className="nav-item">
-                    <Link className='nav-link' to='/accounts' >Accounts</Link>
+                    <Link className='nav-link' to='/accounts' >My Account</Link>
                     {/* <Go cls='nav-link' url='/accounts'/> */}
                     </li>
                     <li className="nav-item">

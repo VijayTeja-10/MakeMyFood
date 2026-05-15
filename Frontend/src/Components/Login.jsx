@@ -28,6 +28,9 @@ const Login = () => {
     }
   return (
     <>
+    <header className='fixed-top'>
+        <h1 class=" fst-italic d-flex justify-content-center">Make My Food</h1>
+    </header>
     <div className='d-flex container justify-content-center mt-5 p-5' onSubmit={handleLogin}>
         <form className='bg-secondary-subtle p-5 rounded min-w-50' action="">
             <h4 className='text-center'>Login to your Account</h4>
@@ -51,6 +54,9 @@ const Login = () => {
             </div>
         </form>
     </div>
+    <footer className='bg-dark text-light p-2 fixed-bottom'>
+        <p className='d-flex justify-content-center mt-3'>© 2026 MakeMyFood — &nbsp;<Go cls='text-danger' url='/signup' text='Register your restaurant and grow with us.'/></p>
+    </footer>
     </>
   )
 }

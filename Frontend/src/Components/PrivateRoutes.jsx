@@ -1,29 +1,29 @@
-import React, { useContext, createContext, useState} from 'react'
+import React, { useContext, createContext, useState, useEffect} from 'react'
 import {Authorization} from './AuthProvider'
 import { Navigate, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axiosInstance from './AxiosInstance'
 
 const Profile=createContext()
 
 const PrivateRoutes = ({children}) => {
-    const {isLogged}=useContext(Authorization)
+    const navi=useNavigate()
+    const {isLogged,setLog}=useContext(Authorization)
     // console.log(isLogged,localStorage.getItem('AccessToken'),'hi')
     const [profile,setProfile]=useState({})
 
     const AddProfile=async ()=>{
       try{
-        const response= await axios.get('http://127.0.0.1:8000/api/users/profile/',{headers:{Authorization:`Bearer ${localStorage.getItem('AccessToken')}`}})
+        const response= await axiosInstance.get('/users/profile/')
         setProfile(response.data)
         console.log(response.data)
-        localStorage.setItem('Profile','Loaded')
       }catch(err){
-        console.log()
+        console.log('refresh token error',err)
+        navi('/')
+        setLog(false)
       }
       
     }
-    if(isLogged && !localStorage.getItem('Profile')){
-      AddProfile()
-    }
+    const Fetch=useEffect(()=>{AddProfile()},[])
   return (isLogged?(
         <Profile.Provider value={{profile,setProfile}}>{children}</Profile.Provider>
         ):(<Navigate to='/' />))

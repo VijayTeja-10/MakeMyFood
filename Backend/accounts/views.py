@@ -15,22 +15,18 @@ class RestaurantsView(generics.ListAPIView):
     queryset=Restaurant.objects.all()
     serializer_class=RestaurantSerializer
 
-class UserData(viewsets.ViewSet):
+class UserData(viewsets.ModelViewSet):
+        queryset=GlobalUser.objects.all()
+        serializer_class=UserSerializer
         @action(detail=False,methods=['get'])
         def users(self,request):
             queryset=GlobalUser.objects.all()
             serializer=UserSerializer(queryset,many=True)
             return Response(serializer.data)
-        
-        def create(self,request):
-            serializer=UserSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(status=status.HTTP_201_CREATED)
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
         @action(detail=False,methods=['get'])
         def profile(self,request):
-                print(request.user)
-                userdata=GlobalUser.objects.get(username=request.user.username)
-                return Response({'username':userdata.username,'email':userdata.email,'phone':userdata.phone})
+                # print(request.user,'user id',request.user.id)
+                userdata=GlobalUser.objects.get(id=request.user.id)
+                return Response({'id':request.user.id,'username':userdata.username,'email':userdata.email,'phone':userdata.phone})
+        

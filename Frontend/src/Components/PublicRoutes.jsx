@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom'
 const PublicRoutes = ({children}) => {
     const {isLogged}=useContext(Authorization)
   return (
-    !isLogged?(children):('')
+    !isLogged?(children):(<Navigate to='/explore' />)
   )
 }
 
