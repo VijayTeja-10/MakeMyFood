@@ -15,15 +15,15 @@ class GlobalUser(AbstractUser):
 
 class Restaurant(models.Model):
     name=models.CharField(max_length=255)
-    email=models.EmailField()
-    phone=models.BigIntegerField()
+    email=models.EmailField(unique=True)
+    phone=models.BigIntegerField(unique=True)
     desc=models.TextField(default='')
     image=models.URLField(default=None,null=True,blank=True)
     location=models.URLField()
     isRes=models.BooleanField(default=False)
     pincode=models.IntegerField() #postalcode
     gstId=models.CharField(max_length=15,unique=True)
-    manager=models.OneToOneField(GlobalUser,on_delete=models.CASCADE,related_name='restaurant')
+    manager=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='restaurant')
 
     def __str__(self):
         return self.name
@@ -41,28 +41,29 @@ class Table(models.Model):
     restaurant=models.ForeignKey(Restaurant,on_delete=models.CASCADE,related_name='table')
 
     def __str__(self):
-        return str(self.val)
+        return self.restaurant.name+' table-'+str(self.val)
     
 class Seat(models.Model):
     val=models.IntegerField()
     occupied=models.BooleanField(default=False)
     table=models.ForeignKey(Table,on_delete=models.CASCADE,related_name='seat')
+    uid=models.IntegerField(null=True,blank=True)
 
     def __str__(self):
         return str(self.val)
 
 class Reviews(models.Model):
     review=models.TextField()
-    user=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='users')
-    restaurant=models.ForeignKey(Restaurant,on_delete=models.CASCADE,related_name='reviews')
+    user=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='review')
+    restaurant=models.ForeignKey(Restaurant,on_delete=models.CASCADE,related_name='review')
 
     def __str__(self):
-        return self.user
+        return self.restaurant.name
     
 class Orders(models.Model):
     buyer=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='user')
     seller=models.ForeignKey(Restaurant,on_delete=models.CASCADE,related_name='restaurant')
-    items=models.JSONField(default=dict)
+    items=models.JSONField(default=list)
     seats=models.JSONField(default=list)
     bill=models.FloatField()
     date=models.DateField(auto_now_add=True)

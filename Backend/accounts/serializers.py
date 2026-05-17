@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Restaurant,Table,Menu,Seat,GlobalUser
+from .models import Restaurant,Table,Menu,Seat,GlobalUser,Reviews
 
 
 class DishSerializer(serializers.ModelSerializer):
@@ -20,19 +20,28 @@ class TableSerializer(serializers.ModelSerializer):
         fields=['id','val','seat','seats']
     def get_seats(self,obj):
         return obj.seat.count() if hasattr(obj,'seat') else 0
+    
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Reviews
+        fields='__all__'
 
 class RestaurantSerializer(serializers.ModelSerializer):
     menu=DishSerializer(many=True)
     table=TableSerializer(many=True)
+    review=ReviewSerializer(many=True)
     tables=serializers.SerializerMethodField()
+    reviews=serializers.SerializerMethodField()
     class Meta:
         model=Restaurant
-        exclude=['password','email','pin']
+        exclude=['gstId','email','pincode']
     def get_tables(self,obj):
         return obj.table.count() if hasattr(obj,'table') else 0
+    def get_reviews(self,obj):
+        return obj.review.count() if hasattr(obj,'review') else 0
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password=serializers.CharField(write_only=True,style={'input_type' : 'password'})
+    # password=serializers.CharField(write_only=True,style={'input_type' : 'password'})
     class Meta:
         model=Restaurant
         fields='__all__'
