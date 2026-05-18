@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import Go from './Go'
 import Nav from './Nav'
 
-const Display = () => {
+const Display = (props) => {
     const [mainScreen,Setmain]=useState(true)
     const [food,Setitems]=useState([])
     const [placename,Setplace]=useState('')
@@ -17,6 +17,8 @@ const Display = () => {
     const [Rname,Setrname]=useState('')
     const [reviews,Setreviews]=useState([])
     const [Res,Setrest]=useState([])
+    const [Filtres,SetFil]=useState(null)
+    const [navRes,setNav]=useState(false)
     const fetch= async ()=>{
         try{
         const response= await axios.get('http://127.0.0.1:8000/api/restaurants/')
@@ -41,7 +43,7 @@ const Display = () => {
     }
 
     const showMenu=(food,name,Res,pls)=>{
-        
+        setNav(pls)
         Setres(Res)
         Setpls(pls)
         Setmain(!mainScreen)
@@ -58,7 +60,7 @@ const Display = () => {
     }
 
     const showMain=(FoodPlaces)=>{
-        return (<>
+        const noFilter=<>
             <div className='d-flex justify-content-around flex-wrap'>
                 {
                     FoodPlaces.map((place)=>(
@@ -86,7 +88,42 @@ const Display = () => {
                     </div>
                 </div>
             </div>
-        </>)
+        </>
+        
+        if(Filtres==null){return noFilter}
+        else{
+            const Filtered=<>
+            <div className='d-flex justify-content-around flex-wrap'>
+                {
+                    FoodPlaces.map((place)=>(
+                        <>{place.isRes==Filtres?(
+                            <div key={place.id} className="card crd m-3">
+                            <img src={place.image} className="card-img-top object-fit-cover border rounded cim" alt="..."></img>
+                            <div className="card-body">
+                                <h5 className="card-title">{place.name}</h5>
+                                <p className="card-text">{place.desc} <br /><b>Phone :</b>{place.phone}</p>
+                                <div className="d-flex justify-content-between">
+                                    <button onClick={()=>{showMenu(place.menu,place.name,place.isRes,place)}} className="btn btn-warning">{Menu(place.isRes)}</button>
+                                    <button onClick={()=>{Setrname(place.name),Setreviews(place.review)}} class="btn btn-outline-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Reviews</button>
+                                </div>
+                            </div>
+                            </div>):(<></>)
+                        }</>
+                ))}
+                <div class="offcanvas offcanvas-bottom" tabindex="-1" data-bs-theme="dark" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+                    <div class="offcanvas-header">
+                        <h3 class="offcanvas-title text-danger" id="offcanvasBottomLabel">Reviews for {Rname}</h3>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body small">
+                        {renderReviews(reviews)}
+                    </div>
+                </div>
+            </div>
+        </>
+        return Filtered
+        }
+        
     }
 
     const ItemTables=(isRes)=>{
@@ -110,7 +147,7 @@ const Display = () => {
     return (
         <>
         <h1 className='d-flex justify-content-center fst-italic'>Make My Food</h1>
-            <Nav cls='my-3'/>
+            <Nav res={navRes} setFil={SetFil} cls='my-3'/>
             {Screen()}
         </>
     )

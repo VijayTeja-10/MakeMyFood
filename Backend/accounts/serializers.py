@@ -46,6 +46,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         model=Restaurant
         fields='__all__'
 
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Menu
+        fields=['item','restaurant','id']
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=GlobalUser

@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import generics,viewsets,status
 from .models import Restaurant,GlobalUser,Menu,Table,Seat
-from .serializers import RestaurantSerializer,RegisterSerializer,UserSerializer,DishSerializer,TableSerializer,SeatSerializer
+from .serializers import (RestaurantSerializer,RegisterSerializer,UserSerializer,
+                          DishSerializer,TableSerializer,SeatSerializer,ItemSerializer)
 
 # Create your views here.
 
@@ -18,13 +19,28 @@ class RestaurantsView(viewsets.ModelViewSet):
 class MenuView(viewsets.ModelViewSet):
     queryset=Menu.objects.all()
     serializer_class=DishSerializer
+    @action(detail=False,methods=['post'])
+    def PullItem(self,request):
+        items=Menu.objects.filter(item=request.data.get('item',None),inStock=True)
+        serializer=ItemSerializer(items,many=True)
+        print('processing')
+        # print(request.data['item'] in serializer.data.menu)
+        return Response(serializer.data)
+    
+    @action(detail=False,methods=['post'])
+    def PullRestaurantItem(self,request):
+        items=Menu.objects.filter(item=request.data.get('item',None),restaurant=request.data.get('restaurant',None),inStock=True)
+        serializer=ItemSerializer(items,many=True)
+        print('processing')
+        print(request.data['item'], serializer.data)
+        return Response(serializer.data)
 
 class TableView(viewsets.ModelViewSet):
     queryset=Table.objects.all()
     serializer_class=TableSerializer
-    @action(detail=False,methods=['get'])
-    def PullData(self,request,pk=None):
-         tables=Restaurant.objects.get(id=pk)
+    # @action(detail=False,methods=['get'])
+    # def PullData(self,request,pk=None):
+    #      tables=Restaurant.objects.get(id=pk)
         #  serailizer=in
 
 class SeatPolling(viewsets.ModelViewSet):

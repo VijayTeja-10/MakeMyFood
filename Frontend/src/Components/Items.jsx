@@ -2,6 +2,7 @@ import React from 'react'
 
 const Items = ({items,name}) => {
     const Instock=(instock)=>{
+        console.log('Items ',items)
         if(instock){
             return <button href="#" className="btn btn-warning ms-auto" >Add</button>
         }else{

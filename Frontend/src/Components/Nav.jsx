@@ -1,7 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import axiosInstance from './AxiosInstance'
+import Table from './Table'
+import Items from './Items'
 const Nav = (prop) => {
-  return (
+    const navi=useNavigate()
+    const [item,setItem]=useState('')
+    const [items,setItems]=useState(null)
+    const useFilter=(bool)=>{
+        if(prop.setFil){
+            prop.setFil(bool)
+            console.log('filtering ',bool)
+        }else{
+            alert('Go to explore page to apply this filter')
+        }
+    }
+    const handleSearch=async (e)=>{
+        e.preventDefault()
+        if(prop.res){
+            try{
+                console.log('Item -',item,prop.res.id)
+                const Menu=await axiosInstance.post(`/menu/PullRestaurantItem/`,{item:item, "restaurant": prop.res.id})
+                // console.log('item fetched ',Menu.data.pop(),Menu.data['id'])
+                const it=await axiosInstance.get(`/menu/${Menu.data.pop().id}/`)
+                setItems(it.data)
+            }catch(error){
+                console.log(error.data)
+            }
+        }
+    }
+    return (
     <>
         <nav className={`navbar navbar-expand-lg bg-body-tertiary sticky-top {prop.cls}`} data-bs-theme="dark">
             <div className="container-fluid">
@@ -19,20 +48,21 @@ const Nav = (prop) => {
                     <Link className='nav-link' to='/orders' >My Orders</Link> {/* you must have to store userid for both acc & ord*/}
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link" href="#">Restaurants</a>
+                    <button className="nav-link" onClick={()=>{useFilter(true)}}>Restaurants</button>
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link" href="#">Take away Stores</a>
+                    <button className="nav-link" onClick={()=>{useFilter(false)}}>Take away Stores</button>
                     </li>
                     
                 </ul>
-                <form className="d-flex col col-lg-0 ms-5" role="search">
-                    <input className="form-control me-1" type="search" placeholder="Search" aria-label="Search"/>
+                <form className="d-flex col col-lg-0 ms-5" role="search" onSubmit={handleSearch}>
+                    <input className="form-control me-1" type="text" onChange={(e)=>{setItem(e.target.value)}} placeholder="Search" aria-label="Search" value={item}/>
                     <button className="btn btn-outline-danger" type="submit">🔍︎</button>
                 </form>
                 </div>
             </div>
         </nav>
+        {items?(<Items items={[items]}/>):(<></>)}
     </>
   )
 }
