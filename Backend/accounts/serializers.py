@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Restaurant,Table,Menu,Seat,GlobalUser,Reviews
+from .models import Restaurant,Table,Menu,Seat,GlobalUser,Reviews,Orders
 
 
 class DishSerializer(serializers.ModelSerializer):
@@ -50,6 +50,27 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model=Menu
         fields=['item','restaurant','id']
+
+class ItemPullSerializer(serializers.ModelSerializer):
+    Rname=serializers.SerializerMethodField()
+    class Meta:
+        model=Menu
+        fields='__all__'
+    def get_Rname(self,obj):
+        return obj.restaurant.name
+    
+class OrdersSerializer(serializers.ModelSerializer):
+    Rname=serializers.SerializerMethodField()
+    class Meta:
+        model=Orders
+        fields='__all__'
+    def get_Rname(self,obj):
+        return obj.seller.name
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Reviews
+        fields='__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

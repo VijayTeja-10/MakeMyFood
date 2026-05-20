@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import axiosInstance from './AxiosInstance'
 import Table from './Table'
 import Items from './Items'
+
 const Nav = (prop) => {
     const navi=useNavigate()
     const [item,setItem]=useState('')
-    const [items,setItems]=useState(null)
     const useFilter=(bool)=>{
         if(prop.setFil){
             prop.setFil(bool)
@@ -16,20 +16,18 @@ const Nav = (prop) => {
             alert('Go to explore page to apply this filter')
         }
     }
-    const handleSearch=async (e)=>{
+
+    const handleSearch=(e)=>{
         e.preventDefault()
+        if(!item){return}
+        console.log('navbar',item)
         if(prop.res){
-            try{
-                console.log('Item -',item,prop.res.id)
-                const Menu=await axiosInstance.post(`/menu/PullRestaurantItem/`,{item:item, "restaurant": prop.res.id})
-                // console.log('item fetched ',Menu.data.pop(),Menu.data['id'])
-                const it=await axiosInstance.get(`/menu/${Menu.data.pop().id}/`)
-                setItems(it.data)
-            }catch(error){
-                console.log(error.data)
-            }
-        }
+            localStorage.setItem('ResId',prop.res.id)        
+        }else{localStorage.removeItem('ResId')}
+        localStorage.setItem('FoodItem',item)
+        navi('/search')  
     }
+
     return (
     <>
         <nav className={`navbar navbar-expand-lg bg-body-tertiary sticky-top {prop.cls}`} data-bs-theme="dark">
@@ -62,7 +60,6 @@ const Nav = (prop) => {
                 </div>
             </div>
         </nav>
-        {items?(<Items items={[items]}/>):(<></>)}
     </>
   )
 }

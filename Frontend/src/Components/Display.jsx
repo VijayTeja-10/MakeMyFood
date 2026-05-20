@@ -19,6 +19,7 @@ const Display = (props) => {
     const [Res,Setrest]=useState([])
     const [Filtres,SetFil]=useState(null)
     const [navRes,setNav]=useState(false)
+    
     const fetch= async ()=>{
         try{
         const response= await axios.get('http://127.0.0.1:8000/api/restaurants/')

@@ -2,9 +2,11 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import generics,viewsets,status
-from .models import Restaurant,GlobalUser,Menu,Table,Seat
+from .models import Restaurant,GlobalUser,Menu,Table,Seat,Orders,Reviews
 from .serializers import (RestaurantSerializer,RegisterSerializer,UserSerializer,
-                          DishSerializer,TableSerializer,SeatSerializer,ItemSerializer)
+                          DishSerializer,TableSerializer,SeatSerializer,
+                          ItemSerializer,ItemPullSerializer,OrdersSerializer,
+                          ReviewSerializer)
 
 # Create your views here.
 
@@ -22,9 +24,9 @@ class MenuView(viewsets.ModelViewSet):
     @action(detail=False,methods=['post'])
     def PullItem(self,request):
         items=Menu.objects.filter(item=request.data.get('item',None),inStock=True)
-        serializer=ItemSerializer(items,many=True)
+        serializer=ItemPullSerializer(items,many=True)
         print('processing')
-        # print(request.data['item'] in serializer.data.menu)
+        print(serializer.data)
         return Response(serializer.data)
     
     @action(detail=False,methods=['post'])
@@ -46,6 +48,20 @@ class TableView(viewsets.ModelViewSet):
 class SeatPolling(viewsets.ModelViewSet):
     queryset=Seat.objects.all()
     serializer_class=SeatSerializer
+
+class OrdersView(viewsets.ModelViewSet):
+     queryset=Orders.objects.all()
+     serializer_class=OrdersSerializer
+     @action(detail=False,methods=['get'])
+     def userOrders(self,request):
+        queryset=Orders.objects.filter(buyer=request.user.id)
+        serializer=self.get_serializer(queryset,many=True)
+        # print(request.user)
+        return Response(serializer.data)
+
+class Review(viewsets.ModelViewSet):
+     queryset=Reviews.objects.all()
+     serializer_class=ReviewSerializer
 
 class UserData(viewsets.ModelViewSet):
         queryset=GlobalUser.objects.all()

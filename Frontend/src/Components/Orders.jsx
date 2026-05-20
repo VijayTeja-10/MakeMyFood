@@ -1,11 +1,18 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Items from './cart'
+// import Items from './cart'
 import Nav from './Nav'
+import axiosInstance from './AxiosInstance'
+import PrivateRoutes, { Profile } from './PrivateRoutes'
 const Orders = () => {
+    const {profile,setProfile}=useContext(Profile)
     const navi=useNavigate()
     const [reviewPlace,setPlace]=useState('')
-    const [reviewId,setId]=useState(null)
+
+    const [review,setRv]=useState('')
+    const [orderId,setId]=useState(null)
+    const [placeId,setplaceId]=useState(null)
+    const [Items,setItems]=useState([])
     const [Item,setItem]=useState({})
     const [itemId,setItemId]=useState(null)
     const [price,setPrice]=useState(0)
@@ -24,9 +31,11 @@ const Orders = () => {
             setQuantity(quantity-1)}
         }
     }
-    const setReview=(pname,i)=>{
+    const setReview=(pid,oid,pname)=>{
         setPlace(pname)
-        setId(i)
+        setId(oid)
+        setplaceId(pid)
+        console.log(pid,placeId)
         console.log(pname)
     }
     const editItem=(itemX,i)=>{
@@ -35,6 +44,46 @@ const Orders = () => {
         setPrice(itemX.price)
         setQuantity(itemX.quantity)
         console.log(itemX)
+    }
+    const renderSeats=(seats)=>{
+        return (
+            <div className="btn-group dropend">
+                <button type="button" className="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    View Seats
+                </button>
+                <ul className="dropdown-menu p-3">
+                    {
+                        seats.map((seat)=>(<li>{seat}</li>))
+                    }
+                </ul>
+            </div>
+        )
+    }
+    const fetchOrders=async ()=>{
+        try{
+            const allOrders=await axiosInstance.get(`/orders/userOrders/`)
+            setItems(allOrders.data)
+            console.log('orders ',allOrders.data)
+        }catch(error){
+            console.log(error)
+        }
+    }
+    useEffect(()=>{fetchOrders()},[])
+    const postReview=async ()=>{
+        let details={
+            "review": review,
+            "user": profile.id,
+            "restaurant": placeId,
+            "order": orderId
+        }
+        console.log(details)
+        try{
+            const post=await axiosInstance.post('/reviews/',details)
+            fetchOrders()
+            console.log('review posted')
+        }catch(error){
+            console.log(error.response.data)
+        }
     }
     const write=()=>{
         return (
@@ -46,11 +95,11 @@ const Orders = () => {
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
-                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    <textarea className="form-control" id="exampleFormControlTextarea1" onChange={(e)=>setRv(e.target.value)} value={review} rows="3"></textarea>
                 </div>
                 <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" className="btn btn-success">Post</button>
+                    <button type="button" onClick={postReview} className="btn btn-success">Post</button>
                 </div>
             </div>
         </div>
@@ -65,7 +114,8 @@ const Orders = () => {
             <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">{Item.name}</h1>
-                <button className='btn btn-close'></button>
+                
+                <button className='btn btn-close' data-bs-toggle="tooltip" data-bs-placement="top" title="Remove item"></button>
             </div>
             <div class="modal-body">
                 <h6 className='me-3'>Price : {price}</h6>
@@ -88,19 +138,20 @@ const Orders = () => {
 
     const renderOrders=()=>{
         const history=[]
-        for(let i=1;i<=5;i++){
+        Items.map((place)=>(place.paid?(
+            
             history.push(
                 <div className="card bg-danger-subtle crd m-2">
                 <div className="card-header d-flex justify-content-between">
-                    <p className='text-wrap me-2'><b>₹{i}000</b> Paid on dd-mm-yyyy</p>
-                    <button onClick={()=>{setReview(`Placename ${i}`,{i})}} type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">🖂</button>
-                    
+                    <p className='text-wrap me-2'><b>₹{place.bill}</b> Paid on {place.date}</p>
+                    <button onClick={()=>{setReview(place.seller,place.id,place.Rname)}} type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">🖂</button>
+                    {console.log(place.seller,place.id,place.Rname)}
                 </div>
                 <div className="card-body">
                     <div className='d-flex justify-content-between m-2'>
                         <div>
-                            <h5 className="card-title">Placename {i}</h5>
-                            <p className="card-text">You've dined here.</p>
+                            <h5 className="card-title">{place.Rname}</h5>
+                            {place.seats?(<p className="card-text">You've dined here.</p>):(<p className="card-text">You've picked here.</p>)}
                         </div>
                     </div>
                     <div className='d-flex justify-content-between'>
@@ -112,37 +163,39 @@ const Orders = () => {
                             <li><a className="dropdown-item text-wrap" href="#">Action</a></li>
                             <li><a className="dropdown-item text-wrap" href="#">Another action</a></li>
                             <li><a className="dropdown-item text-wrap" href="#">Something else here</a></li>
+                            {place.items.map((it)=>(
+                            <li> 
+                                <button class="btn dropdown-item">
+                                {it.name} - {it.quantity} - ₹{it.price}
+                                </button>
+                            </li>))}
                         </ul>
                         </div>
                         <div className="btn-group dropend">
-                        <button type="button" className="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            View Seats
-                        </button>
-                        <ul className="dropdown-menu p-3">
-                            <li>Table {i} Seat{i}</li>
-                            <li>Table {i} Seat{i+1}</li>
-                        </ul>
+                        {place.seats?(renderSeats(place.seats)):(<></>)}
                         </div>
                     </div>
                 </div>
                 </div>
             )
-        }
+        ):(<></>)))
+        
         return <div className='d-flex flex-wrap justify-content-between'>{history}{write()}</div>
     }
     const renderCart=()=>{
         const cart=[]
         Items.map((place)=>(
-            cart.push(
+            
+            !place.paid?(cart.push(
                 <div className="card bg-info-subtle crd m-2">
                 <div className="card-header d-flex justify-content-between">
                     <button className='btn h4 btn-danger text-light me-auto fw-bold'>×</button>
-                    <button className='btn btn-danger '>Pay ₹{place.price}</button>
+                    <button className='btn btn-danger '>Pay ₹{place.bill}</button>
                 </div>
                 <div className="card-body">
                     <div className='d-flex justify-content-between m-2'>
                         <div>
-                            <h5 className="card-title">{place.placeName}</h5>
+                            <h5 className="card-title">{place.Rname}</h5>
                             <p className="card-text">Complete your payment.</p>
                         </div>
                     </div>
@@ -160,19 +213,11 @@ const Orders = () => {
                             </li>))}
                         </ul>
                         </div>
-                        <div className="btn-group dropend">
-                        <button type="button" className="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            View Seats
-                        </button>
-                        <ul className="dropdown-menu p-3">
-                            <li>Table </li>
-                            <li>Table </li>
-                        </ul>
-                        </div>
+                        {place.seats?(renderSeats(place.seats)):(<></>)}
                     </div>
                 </div>
                 </div>
-            )
+            )):(<></>)
         ))
         return <div className='d-flex flex-wrap justify-content-between'>{cart}{editItems()}</div>
     }

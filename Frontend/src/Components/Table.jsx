@@ -80,6 +80,7 @@ const Table = (props) => {
         }
     }
   return (
+    <>
     <div className='container tables p-3 rounded'>
         <ul className="nav nav-tabs">
         <li className="nav-item">
@@ -91,7 +92,7 @@ const Table = (props) => {
         </ul>
         {Switch(s)}
     </div>
-    
+    </>    
   )
 }
 

@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from accounts.views import RestaurantRegisterView,RestaurantsView,UserData,MenuView,TableView,SeatPolling
+from accounts.views import RestaurantRegisterView,RestaurantsView,UserData,MenuView,TableView,SeatPolling,OrdersView,Review
 from rest_framework.routers import DefaultRouter
 
 router=DefaultRouter()
@@ -13,6 +13,8 @@ router.register('menu',MenuView,basename='menu')
 router.register('table',TableView,basename='table')
 router.register('restaurants',RestaurantsView,basename='restaurants')
 router.register('seatpoll',SeatPolling,basename='seatpoll')
+router.register('orders',OrdersView,basename='orders')
+router.register('reviews',Review,basename='reviews')
 
 urlpatterns = [
     # path('restaurants/',RestaurantsView.as_view()),

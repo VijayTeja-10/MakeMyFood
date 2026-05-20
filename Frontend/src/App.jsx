@@ -9,6 +9,7 @@ import Orders from './Components/Orders'
 import PrivateRoutes from './Components/PrivateRoutes'
 import AuthProvider from './Components/AuthProvider'
 import PublicRoutes from './Components/PublicRoutes'
+import Search from './Components/Search'
 function App() {  
   return (
     <>
@@ -20,6 +21,7 @@ function App() {
         <Route path='/explore' element={<PrivateRoutes> <Display /> </PrivateRoutes>} />
         <Route path='/accounts' element={<PrivateRoutes> <Account /> </PrivateRoutes>} />
         <Route path='/orders' element={<PrivateRoutes> <Orders /> </PrivateRoutes>} />
+        <Route path='/search' element={<PrivateRoutes> <Search /> </PrivateRoutes>} />
       </Routes>
       </BrowserRouter>
     </AuthProvider>

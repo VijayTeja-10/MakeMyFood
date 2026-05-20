@@ -52,19 +52,21 @@ class Seat(models.Model):
     def __str__(self):
         return str(self.val)
 
-class Reviews(models.Model):
-    review=models.TextField()
-    user=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='review')
-    restaurant=models.ForeignKey(Restaurant,on_delete=models.CASCADE,related_name='review')
-
-    def __str__(self):
-        return self.restaurant.name
     
 class Orders(models.Model):
     buyer=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='user')
     seller=models.ForeignKey(Restaurant,on_delete=models.CASCADE,related_name='restaurant')
     items=models.JSONField(default=list)
-    seats=models.JSONField(default=list)
+    seats=models.JSONField(default=list,null=True,blank=True)
     bill=models.FloatField()
     date=models.DateField(auto_now_add=True)
     paid=models.BooleanField(default=False)
+
+class Reviews(models.Model):
+    review=models.TextField()
+    user=models.ForeignKey(GlobalUser,on_delete=models.CASCADE,related_name='review')
+    restaurant=models.ForeignKey(Restaurant,on_delete=models.CASCADE,related_name='review')
+    order=models.OneToOneField(Orders,on_delete=models.CASCADE,related_name='review')
+
+    def __str__(self):
+        return self.restaurant.name

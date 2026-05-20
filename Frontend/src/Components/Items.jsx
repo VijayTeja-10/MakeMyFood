@@ -1,22 +1,25 @@
 import React from 'react'
+import Nav from './Nav'
 
-const Items = ({items,name}) => {
+const Items = (props) => {
+
     const Instock=(instock)=>{
-        console.log('Items ',items)
+        console.log('Items ',props.items)
         if(instock){
             return <button href="#" className="btn btn-warning ms-auto" >Add</button>
         }else{
             return <button href="#" className="btn btn-warning ms-auto disabled" >N/A</button>
         }
     }
-
+    
   return (
     <>
-    <div class='d-flex flex-wrap'>
+    <div className='d-flex flex-wrap'>
         {
-            items.map((item)=>(
+            props.items.map((item)=>(
                 <div className="card d-flex justify-content-center m-3 fcrd" >
                 <div className="row g-0">
+                    {item.Rname?(<h5 className='text-center'>{item.Rname}</h5>):(<></>)}
                     <div className="d-flex justify-content-center col-md-4 me-auto">
                     <img src={item.image} className="card-img object-fit-fill border rounded fim m-3" alt="..."></img>
                     </div>
