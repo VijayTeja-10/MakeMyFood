@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import Table from './Table'
 import Items from './Items'
@@ -6,6 +6,7 @@ import Items from './Items'
 import { Link } from 'react-router-dom'
 import Go from './Go'
 import Nav from './Nav'
+import { Profile } from './PrivateRoutes'
 
 const Display = (props) => {
     const [mainScreen,Setmain]=useState(true)
@@ -19,6 +20,7 @@ const Display = (props) => {
     const [Res,Setrest]=useState([])
     const [Filtres,SetFil]=useState(null)
     const [navRes,setNav]=useState(false)
+    const {profile,setProfile}=useContext(Profile)
     
     const fetch= async ()=>{
         try{
@@ -130,9 +132,9 @@ const Display = (props) => {
     const ItemTables=(isRes)=>{
         if(isRes){
             // console.log('table',tables)
-            return <><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Table res={place}  menu={<Items items={food} name={placename}/>} /></>
+            return <><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Table res={place} items={food} name={placename}/></>
         }else{
-            return (<div><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Items items={food} name={placename}/></div>)
+            return (<div><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Items items={food} name={placename}  rid={place.id} uid={profile.id}/></div>)
         }
     }
 

@@ -31,6 +31,7 @@ class Restaurant(models.Model):
 class Menu(models.Model):
     item=models.CharField(max_length=100)
     image=models.URLField(default=None,null=True,blank=True)
+    base_quantity=models.IntegerField(default=1)
     desc=models.TextField()
     price=models.DecimalField(max_digits=10,decimal_places=2)
     inStock=models.BooleanField(default=False)

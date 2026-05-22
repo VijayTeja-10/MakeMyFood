@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { data, useNavigate } from 'react-router-dom'
 // import Items from './cart'
 import Nav from './Nav'
 import axiosInstance from './AxiosInstance'
@@ -8,11 +8,12 @@ const Orders = () => {
     const {profile,setProfile}=useContext(Profile)
     const navi=useNavigate()
     const [reviewPlace,setPlace]=useState('')
-
+    const [disable,setDisable]=useState(false)
     const [review,setRv]=useState('')
     const [orderId,setId]=useState(null)
     const [placeId,setplaceId]=useState(null)
-    const [Items,setItems]=useState([])
+    const [Items,setItems]=useState([])//places
+    const [Its,setIts]=useState([])//cart items
     const [Item,setItem]=useState({})
     const [itemId,setItemId]=useState(null)
     const [price,setPrice]=useState(0)
@@ -31,19 +32,33 @@ const Orders = () => {
             setQuantity(quantity-1)}
         }
     }
-    const setReview=(pid,oid,pname)=>{
-        setPlace(pname)
-        setId(oid)
-        setplaceId(pid)
-        console.log(pid,placeId)
-        console.log(pname)
+    const setReview=async (pid,oid,pname)=>{
+        try{
+            const fetchReview=await axiosInstance.get(`/reviews/${oid}/`,)
+            console.log('review : ',fetchReview.data)
+            setRv(fetchReview.data.review)
+            setDisable(true)
+        }catch(error){
+            console.log()
+        }
+            setPlace(pname)
+            setId(oid)
+            setplaceId(pid)
+            console.log(pid,placeId)
+            console.log(pname)
+        
     }
-    const editItem=(itemX,i)=>{
+    const Disablity=()=>{
+        return disable?('disabled'):('')
+    }
+    const editItem=(itemX,i,itx,oid)=>{
         setItem(itemX)
         setItemId(i)
-        setPrice(itemX.price)
-        setQuantity(itemX.quantity)
-        console.log(itemX)
+        setPrice(Number(itemX.price))
+        setQuantity(Number(itemX.quantity))
+        setIts(itx)
+        setId(oid)
+        console.log(itemX,oid)
     }
     const renderSeats=(seats)=>{
         return (
@@ -53,7 +68,7 @@ const Orders = () => {
                 </button>
                 <ul className="dropdown-menu p-3">
                     {
-                        seats.map((seat)=>(<li>{seat}</li>))
+                        seats.map((seat)=>(<li>Table {seat[0]} Seat {seat[1]}</li>))
                     }
                 </ul>
             </div>
@@ -91,7 +106,7 @@ const Orders = () => {
         <div className="modal-dialog">
             <div className="modal-content">
                 <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">Write a review for {reviewPlace}</h1>
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">{disable?'Your ':'Write a'} review for {reviewPlace}</h1>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
@@ -99,11 +114,24 @@ const Orders = () => {
                 </div>
                 <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" onClick={postReview} className="btn btn-success">Post</button>
+                    <button type="button" onClick={postReview} className={`btn btn-success ${Disablity()}`}>Post</button>
                 </div>
             </div>
         </div>
         </div>)
+    }
+
+    const updateCart=async (data)=>{
+        console.log(data,itemId)
+        let temp=[...Its]
+        temp[itemId]=data
+        console.log('patching',orderId)
+        try{
+            const response=await axiosInstance.patch(`/orders/${orderId}/`,temp)
+            console.log('patched',response.data)
+        }catch(error){
+            console.log()
+        }
     }
 
     const editItems=()=>{
@@ -129,7 +157,7 @@ const Orders = () => {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success">Save</button>
+                <button type="button" onClick={()=>{updateCart({name:Item.name,price:price,quantity:quantity})}} class="btn btn-success">Save</button>
             </div>
             </div>
         </div>
@@ -160,9 +188,6 @@ const Orders = () => {
                             View Items
                         </button>
                         <ul className="dropdown-menu">
-                            <li><a className="dropdown-item text-wrap" href="#">Action</a></li>
-                            <li><a className="dropdown-item text-wrap" href="#">Another action</a></li>
-                            <li><a className="dropdown-item text-wrap" href="#">Something else here</a></li>
                             {place.items.map((it)=>(
                             <li> 
                                 <button class="btn dropdown-item">
@@ -205,9 +230,9 @@ const Orders = () => {
                             View Items
                         </button>
                         <ul className="dropdown-menu">
-                            {place.items.map((it)=>(
+                            {place.items.map((it,index)=>(
                             <li> 
-                                <button onClick={()=>{editItem(it,place.id)}} class="btn dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <button key={index} onClick={()=>{editItem(it,index,place.items,place.id)}} class="btn dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 {it.name} - {it.quantity} - ₹{it.price}
                                 </button>
                             </li>))}

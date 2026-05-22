@@ -1,6 +1,16 @@
 from rest_framework import serializers
 from .models import Restaurant,Table,Menu,Seat,GlobalUser,Reviews,Orders
 
+class UserseatSerializer(serializers.ModelSerializer):
+    tval=serializers.SerializerMethodField()
+    rid=serializers.SerializerMethodField()
+    class Meta:
+        model=Seat
+        fields='__all__'
+    def get_rid(self,obj):
+        return obj.table.restaurant.id
+    def get_tval(self,obj):
+        return obj.table.val
 
 class DishSerializer(serializers.ModelSerializer):
     class Meta:

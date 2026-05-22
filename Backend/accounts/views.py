@@ -6,7 +6,7 @@ from .models import Restaurant,GlobalUser,Menu,Table,Seat,Orders,Reviews
 from .serializers import (RestaurantSerializer,RegisterSerializer,UserSerializer,
                           DishSerializer,TableSerializer,SeatSerializer,
                           ItemSerializer,ItemPullSerializer,OrdersSerializer,
-                          ReviewSerializer)
+                          ReviewSerializer,UserseatSerializer)
 
 # Create your views here.
 
@@ -48,6 +48,12 @@ class TableView(viewsets.ModelViewSet):
 class SeatPolling(viewsets.ModelViewSet):
     queryset=Seat.objects.all()
     serializer_class=SeatSerializer
+    @action(detail=False,methods=['get'])
+    def userseats(self,request):
+        queryset=Seat.objects.filter(uid=request.user.id,occupied=True)
+        serializer=UserseatSerializer(queryset,many=True)
+        # print(request.user)
+        return Response(serializer.data)
 
 class OrdersView(viewsets.ModelViewSet):
      queryset=Orders.objects.all()
@@ -55,6 +61,12 @@ class OrdersView(viewsets.ModelViewSet):
      @action(detail=False,methods=['get'])
      def userOrders(self,request):
         queryset=Orders.objects.filter(buyer=request.user.id)
+        serializer=self.get_serializer(queryset,many=True)
+        # print(request.user)
+        return Response(serializer.data)
+     @action(detail=False,methods=['get'])
+     def usercart(self,request):
+        queryset=Orders.objects.filter(buyer=request.user.id,paid=False)
         serializer=self.get_serializer(queryset,many=True)
         # print(request.user)
         return Response(serializer.data)
