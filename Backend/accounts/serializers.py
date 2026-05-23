@@ -71,6 +71,7 @@ class ItemPullSerializer(serializers.ModelSerializer):
     
 class OrdersSerializer(serializers.ModelSerializer):
     Rname=serializers.SerializerMethodField()
+    review=ReviewSerializer()
     class Meta:
         model=Orders
         fields='__all__'

@@ -32,14 +32,13 @@ const Orders = () => {
             setQuantity(quantity-1)}
         }
     }
-    const setReview=async (pid,oid,pname)=>{
-        try{
-            const fetchReview=await axiosInstance.get(`/reviews/${oid}/`,)
-            console.log('review : ',fetchReview.data)
-            setRv(fetchReview.data.review)
+    const setReview=(pid,oid,pname,p)=>{
+        if(p.review){
+            setRv(p.review.review)
             setDisable(true)
-        }catch(error){
-            console.log()
+        }else{
+            setRv('')
+            setDisable(false)
         }
             setPlace(pname)
             setId(oid)
@@ -96,6 +95,7 @@ const Orders = () => {
             const post=await axiosInstance.post('/reviews/',details)
             fetchOrders()
             console.log('review posted')
+            window.location.reload()
         }catch(error){
             console.log(error.response.data)
         }
@@ -125,10 +125,26 @@ const Orders = () => {
         console.log(data,itemId)
         let temp=[...Its]
         temp[itemId]=data
-        console.log('patching',orderId)
+        let bill=Math.sumPrecise(temp.map((it)=>(Number(it.price))))
+        console.log('patching',orderId,temp)
         try{
-            const response=await axiosInstance.patch(`/orders/${orderId}/`,temp)
+            const response=await axiosInstance.patch(`/orders/${orderId}/`,{items:temp,bill:Number(bill)})
             console.log('patched',response.data)
+            fetchOrders()
+        }catch(error){
+            console.log()
+        }
+    }
+    const deleteCartItem=async ()=>{
+        console.log(itemId)
+        let temp=[...Its]
+        temp.splice(itemId,1)
+        let bill=Math.sumPrecise(temp.map((it)=>(Number(it.price))))
+        console.log('del patching',orderId,temp)
+        try{
+            const response=await axiosInstance.patch(`/orders/${orderId}/`,{items:temp,bill:Number(bill)})
+            console.log('del patched',response.data)
+            fetchOrders()
         }catch(error){
             console.log()
         }
@@ -143,7 +159,7 @@ const Orders = () => {
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">{Item.name}</h1>
                 
-                <button className='btn btn-close' data-bs-toggle="tooltip" data-bs-placement="top" title="Remove item"></button>
+                <button className='btn btn-close' onClick={()=>{deleteCartItem()}} data-bs-toggle="tooltip" data-bs-placement="top" title="Remove item"></button>
             </div>
             <div class="modal-body">
                 <h6 className='me-3'>Price : {price}</h6>
@@ -172,7 +188,7 @@ const Orders = () => {
                 <div className="card bg-danger-subtle crd m-2">
                 <div className="card-header d-flex justify-content-between">
                     <p className='text-wrap me-2'><b>₹{place.bill}</b> Paid on {place.date}</p>
-                    <button onClick={()=>{setReview(place.seller,place.id,place.Rname)}} type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">🖂</button>
+                    <button onClick={()=>{setReview(place.seller,place.id,place.Rname,place)}} type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">🖂</button>
                     {console.log(place.seller,place.id,place.Rname)}
                 </div>
                 <div className="card-body">
@@ -207,6 +223,22 @@ const Orders = () => {
         
         return <div className='d-flex flex-wrap justify-content-between'>{history}{write()}</div>
     }
+    const delCart=async(oid)=>{
+        try{
+            const response=await axiosInstance.delete(`/orders/${oid}/`)
+            fetchOrders()
+        }catch(error){
+            alert('Failed to delete Cart. Please try again!')
+        }
+    }
+    const payBill=async(oid)=>{
+        try{
+            const response=await axiosInstance.patch(`/orders/${oid}/`,{paid:true})
+            fetchOrders()
+        }catch(error){
+            alert('Failed to pay the bill. Please try again!')
+        }
+    }
     const renderCart=()=>{
         const cart=[]
         Items.map((place)=>(
@@ -214,8 +246,8 @@ const Orders = () => {
             !place.paid?(cart.push(
                 <div className="card bg-info-subtle crd m-2">
                 <div className="card-header d-flex justify-content-between">
-                    <button className='btn h4 btn-danger text-light me-auto fw-bold'>×</button>
-                    <button className='btn btn-danger '>Pay ₹{place.bill}</button>
+                    <button onClick={()=>{delCart(place.id)}} className='btn h4 btn-danger text-light me-auto fw-bold'>×</button>
+                    <button onClick={()=>{payBill(place.id)}} className='btn btn-danger '>Pay ₹{place.bill}</button>
                 </div>
                 <div className="card-body">
                     <div className='d-flex justify-content-between m-2'>

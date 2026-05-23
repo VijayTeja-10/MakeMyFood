@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Nav from './Nav'
 import axiosInstance from './AxiosInstance'
 
@@ -6,7 +6,9 @@ const Items = (props) => {
     const [ord,setOrder]=useState({})
     const [items,setitems]=useState([])
     const [bill,setBill]=useState(0)
-    if(props.isRes){const [seats,setSeats]=useState(props.seats.map(element => ([element.tval,element.val])))}
+    console.log('res',props.isRes)
+    const [seats,setSeats]=useState([])
+    useEffect(()=>{ if(props.isRes){setSeats(props.seats.map(element => ([element.tval,element.val])))}},[])
     const order=async(orderDetails)=>{
         
         // if(ord!={}){
@@ -20,15 +22,21 @@ const Items = (props) => {
             const fetchCart=await axiosInstance.get('/orders/usercart/')
             let cart=[...fetchCart.data]
             console.log('current cart ',fetchCart.data)
-            if(fetchCart.data.length<=1 && [...fetchCart.data].pop().seller===orderDetails.seller){
+            console.log('Your Order',orderDetails)
+            if(fetchCart.data.length===1 && [...fetchCart.data].pop().seller===orderDetails.seller){
                 cart=cart.pop()
+                if(cart.items.find(item=>item.name===orderDetails.items.at(-1).name)){
+                    alert('Item is already in cart. Please checkout!')
+                    return
+                }
                 cart.items.push(items.pop())
                 console.log('pushed',cart,items)
-                let newCart={"items": cart.items,"bill": orderDetails.bill}
+                let newCart={"items": cart.items,"bill": Number(cart.bill)+orderDetails.bill}
                 if(props.isRes){newCart.seats=orderDetails.seats}
                 const response= await axiosInstance.patch(`/orders/${cart.id}/`,newCart)
             }else if(fetchCart.data.length===0){
                 const response= await axiosInstance.post('/orders/',orderDetails)
+                setBill(bill+Number(price))
             }else{
                 alert('Please add items that belongs to one restaurant/store!')
             }
@@ -42,7 +50,10 @@ const Items = (props) => {
     }
 
     const handleOrder=(name,price,quantity)=>{
-        if(!items.find(item=>item.name===name)){setBill(bill+Number(price))
+        console.log('handle order',items)
+        if(!items.find(item=>item.name===name)){
+            console.log('not found')
+        
         items.push({name:name,price:price,quantity:quantity})
         let orderDetails={
             "items": items,
@@ -54,7 +65,7 @@ const Items = (props) => {
         if(props.isRes){orderDetails.seats=seats}
         console.log('Your Order',orderDetails)
         order(orderDetails)
-    }
+    }else{alert('Please add items that belongs to one restaurant/store!')}
     }
     
     const Instock=(instock,name,price,quantity)=>{

@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import generics,viewsets,status
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import MenuFilter
 from .models import Restaurant,GlobalUser,Menu,Table,Seat,Orders,Reviews
 from .serializers import (RestaurantSerializer,RegisterSerializer,UserSerializer,
                           DishSerializer,TableSerializer,SeatSerializer,
@@ -23,7 +25,9 @@ class MenuView(viewsets.ModelViewSet):
     serializer_class=DishSerializer
     @action(detail=False,methods=['post'])
     def PullItem(self,request):
-        items=Menu.objects.filter(item=request.data.get('item',None),inStock=True)
+        #custom filter
+        searchItems=MenuFilter(request.data,queryset=self.queryset)
+        items=searchItems.qs #filtered queryset
         serializer=ItemPullSerializer(items,many=True)
         print('processing')
         print(serializer.data)
@@ -31,7 +35,9 @@ class MenuView(viewsets.ModelViewSet):
     
     @action(detail=False,methods=['post'])
     def PullRestaurantItem(self,request):
-        items=Menu.objects.filter(item=request.data.get('item',None),restaurant=request.data.get('restaurant',None),inStock=True)
+        #menu filter only searches for item name, rest of filters are applied by obj.filter
+        searchItems=MenuFilter(request.data,queryset=Menu.objects.filter(restaurant=request.data.get('restaurant',None),inStock=True))
+        items=searchItems.qs
         serializer=ItemSerializer(items,many=True)
         print('processing')
         print(request.data['item'], serializer.data)

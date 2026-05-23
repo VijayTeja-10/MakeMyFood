@@ -134,7 +134,7 @@ const Display = (props) => {
             // console.log('table',tables)
             return <><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Table res={place} items={food} name={placename}/></>
         }else{
-            return (<div><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Items items={food} name={placename}  rid={place.id} uid={profile.id}/></div>)
+            return (<div><h1 className='d-flex justify-content-center m-2'>Welcome to {placename}</h1><Items items={food} name={placename} rid={place.id} uid={profile.id}/></div>)
         }
     }
 
