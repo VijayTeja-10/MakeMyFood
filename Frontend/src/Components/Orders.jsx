@@ -34,7 +34,7 @@ const Orders = () => {
     }
     const setReview=(pid,oid,pname,p)=>{
         if(p.review){
-            setRv(p.review.review)
+            setRv(p.review)
             setDisable(true)
         }else{
             setRv('')

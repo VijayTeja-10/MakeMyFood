@@ -36,7 +36,7 @@ class MenuView(viewsets.ModelViewSet):
     @action(detail=False,methods=['post'])
     def PullRestaurantItem(self,request):
         #menu filter only searches for item name, rest of filters are applied by obj.filter
-        searchItems=MenuFilter(request.data,queryset=Menu.objects.filter(restaurant=request.data.get('restaurant',None),inStock=True))
+        searchItems=MenuFilter(request.data,queryset=Menu.objects.filter(restaurant=request.data.get('restaurant',None)))
         items=searchItems.qs
         serializer=ItemSerializer(items,many=True)
         print('processing')

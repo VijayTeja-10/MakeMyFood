@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Restaurant,Table,Menu,Seat,GlobalUser,Reviews,Orders
+from django.shortcuts import get_object_or_404
 
 class UserseatSerializer(serializers.ModelSerializer):
     tval=serializers.SerializerMethodField()
@@ -71,12 +72,19 @@ class ItemPullSerializer(serializers.ModelSerializer):
     
 class OrdersSerializer(serializers.ModelSerializer):
     Rname=serializers.SerializerMethodField()
-    review=ReviewSerializer()
+    review=serializers.SerializerMethodField()
     class Meta:
         model=Orders
         fields='__all__'
     def get_Rname(self,obj):
         return obj.seller.name
+    def get_review(self,obj):
+        qs=Reviews.objects.filter(order=obj.id).first()
+        if qs:
+            rv=ReviewSerializer(qs)
+            print(qs,rv.data)
+            return rv.data['review']
+        return False
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

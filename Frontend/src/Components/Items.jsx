@@ -23,6 +23,7 @@ const Items = (props) => {
             let cart=[...fetchCart.data]
             console.log('current cart ',fetchCart.data)
             console.log('Your Order',orderDetails)
+
             if(fetchCart.data.length===1 && [...fetchCart.data].pop().seller===orderDetails.seller){
                 cart=cart.pop()
                 if(cart.items.find(item=>item.name===orderDetails.items.at(-1).name)){
@@ -32,11 +33,24 @@ const Items = (props) => {
                 cart.items.push(items.pop())
                 console.log('pushed',cart,items)
                 let newCart={"items": cart.items,"bill": Number(cart.bill)+orderDetails.bill}
-                if(props.isRes){newCart.seats=orderDetails.seats}
+                // if(props.isRes){newCart.seats=orderDetails.seats}
                 const response= await axiosInstance.patch(`/orders/${cart.id}/`,newCart)
+                alert('Item added to cart.')
+
             }else if(fetchCart.data.length===0){
-                const response= await axiosInstance.post('/orders/',orderDetails)
-                setBill(bill+Number(price))
+                if(props.isRes && props.seats.length===0){
+                    alert('Please confirm your seats. Before Adding items to cart.')
+                    return
+                }
+                
+                    console.log('try fresh order')
+                    const response= await axiosInstance.post('/orders/',orderDetails)
+                    setBill(bill+Number(orderDetails.price))
+                    alert('Item added to cart.')
+                    console.log('cart created')
+                    
+                if(props.isRes){alert('Your seats are confirmed! You cannot change them in cart at orders section unless the cart get deleted.')}
+
             }else{
                 alert('Please add items that belongs to one restaurant/store!')
             }
@@ -76,6 +90,13 @@ const Items = (props) => {
             return <button className="btn btn-warning ms-auto disabled" >N/A</button>
         }
     }
+
+    useEffect(()=>{
+        if(props.isRes && props.seats.length===0){
+        console.log('alerted')
+        alert('Please confirm your seats. Before Adding items to cart.')
+        }
+    },[props.isRes && props.seats.length===0])
     
   return (
     <>
