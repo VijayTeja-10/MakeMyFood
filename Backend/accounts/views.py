@@ -76,6 +76,12 @@ class OrdersView(viewsets.ModelViewSet):
         serializer=self.get_serializer(queryset,many=True)
         # print(request.user)
         return Response(serializer.data)
+     @action(detail=False,methods=['post'])
+     def pollorders(self,request):
+        queryset=Orders.objects.filter(seller=request.data.get('seller',None),paid=False)
+        serializer=self.get_serializer(queryset,many=True)
+        # print(request.user)
+        return Response(serializer.data)
 
 class Review(viewsets.ModelViewSet):
      queryset=Reviews.objects.all()
@@ -94,5 +100,9 @@ class UserData(viewsets.ModelViewSet):
         def profile(self,request):
                 # print(request.user,'user id',request.user.id)
                 userdata=GlobalUser.objects.get(id=request.user.id)
-                return Response({'id':request.user.id,'username':userdata.username,'email':userdata.email,'phone':userdata.phone})
+                data={'id':request.user.id,'username':userdata.username,'email':userdata.email,'phone':userdata.phone,'isManager':userdata.isManager}
+                if userdata.isManager:
+                    resId=Restaurant.objects.get(manager=userdata.id)
+                    data['resId']=resId.id
+                return Response(data)
         

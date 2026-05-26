@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Authorization} from './AuthProvider'
 import { Profile } from './PrivateRoutes'
 import axiosInstance from './AxiosInstance'
-const Account = () => {
+const Account = (props) => {
     const {profile,setProfile}=useContext(Profile)
     let userdata=Object.assign({'password':''},profile)
     const navi=useNavigate()
@@ -11,7 +11,7 @@ const Account = () => {
     const [edit,SetEdit]=useState('disabled')
     const back=(e)=>{
         e.preventDefault()
-        navi('/explore')
+        props.isManager?navi('/manager/dashboard'):navi('/explore')
     }
     const signout=(e)=>{
         e.preventDefault()
@@ -41,8 +41,17 @@ const Account = () => {
     const delAcc=async (e)=>{
         e.preventDefault()
         try{
-            const response=await axiosInstance.delete(`/users/${profile.id}/`)
-            signout()
+            try{
+                const pendingSeats=await axiosInstance.get('/seatpoll/userseats/')
+                await Promise.all(
+                    pendingSeats.data.map((booking)=> axiosInstance.patch(`/seatpoll/${booking.id}/`,{occupied:false,uid:null}))
+                )                
+            }catch(err){
+                console.log(err)
+            }finally{
+                const response=await axiosInstance.delete(`/users/${profile.id}/`)
+                signout()
+            }
         }catch(error){
             console.log()
         }

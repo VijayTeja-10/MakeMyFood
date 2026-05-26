@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Go from './Go'
 import axios from 'axios'
 
-const SignUp = () => {
+const SignUp = (props) => {
     const [user,setUser]=useState('')
     const [email,setEmail]=useState('')
     const [phone,setPhone]=useState('')
@@ -13,6 +13,9 @@ const SignUp = () => {
     const handleSubmit=async (e)=>{
         e.preventDefault()
         let userdata={username:user,email:email,phone:phone,password:pass}
+        if(props.isManager){
+            userdata.isManager=true
+        }
         try{
             const response=await axios.post('http://127.0.0.1:8000/api/users/',userdata)
             setAcc(true)
@@ -30,11 +33,20 @@ const SignUp = () => {
             setUser('')
         }
     }
+
+    const title=()=>{
+        return props.isManager?'Create Manager Account':'Create your Account'
+    }
+
+    const loginSwitch=()=>{
+         return props.isManager?(<Go cls='h6' url='/' text='Login here!' />):(<Go cls='h6' url='/' text='Login here!' />)
+    }
+
   return (
     <>
     <div className='d-flex container justify-content-center mt-5 p-5'>
         <form className='bg-secondary-subtle p-5 rounded min-w-50' onSubmit={handleSubmit}>
-            <h4 className='text-center'>Create your Account</h4>
+            <h4 className='text-center'>{title()}</h4>
             { accepted && <div className='alert alert-success'>Your account is created. Please Login!</div> }
             <div>
                 <div className="mb-3">
@@ -68,7 +80,7 @@ const SignUp = () => {
             <button className='btn btn-info my-3' type="submit">SignUp</button>
             <div className='d-flex'>
                 <small className=''>Already have an account?</small>
-                <Go cls='h6' url='/' text='Login here!' />
+                {loginSwitch()}
             </div>
         </form>
     </div>

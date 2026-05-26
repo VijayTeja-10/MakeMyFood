@@ -10,6 +10,7 @@ import PrivateRoutes from './Components/PrivateRoutes'
 import AuthProvider from './Components/AuthProvider'
 import PublicRoutes from './Components/PublicRoutes'
 import Search from './Components/Search'
+import Dashboard from './Components/Dashboard'
 function App() {  
   return (
     <>
@@ -22,6 +23,10 @@ function App() {
         <Route path='/accounts' element={<PrivateRoutes> <Account /> </PrivateRoutes>} />
         <Route path='/orders' element={<PrivateRoutes> <Orders /> </PrivateRoutes>} />
         <Route path='/search' element={<PrivateRoutes> <Search /> </PrivateRoutes>} />
+
+        <Route path='/manager/signup' element={<PublicRoutes> <SignUp isManager={true} /> </PublicRoutes>} />
+        <Route path='/manager/dashboard' element={<PrivateRoutes> <Dashboard /> </PrivateRoutes>} />
+        <Route path='/manager/accounts' element={<PrivateRoutes> <Account isManager={true} /> </PrivateRoutes>} />
       </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import Go from './Go'
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
+import axiosInstance from './AxiosInstance'
 import { Authorization } from './AuthProvider'
 const Login = () => {
     const navi=useNavigate()
@@ -16,7 +17,16 @@ const Login = () => {
             localStorage.setItem('AccessToken',response.data.access)
             localStorage.setItem('RefreshToken',response.data.refresh)
             setLog(true)
-            navi('/explore')
+            const profile= await axiosInstance.get('/users/profile/')
+            console.log('log prof', profile.data)
+            if(profile.data.isManager){
+                location.reload()
+                (navi('/manager/dashboard'))
+                // localStorage.setItem('Manager',true)
+            }else{
+                location.reload()
+                (navi('/explore'))
+            }
         }catch(er){
             console.log(er)
             if(er.code==='ERR_BAD_REQUEST'){alert('Invalid Credentials')}
@@ -55,7 +65,7 @@ const Login = () => {
         </form>
     </div>
     <footer className='bg-dark text-light p-2 fixed-bottom'>
-        <p className='d-flex justify-content-center mt-3'>© 2026 MakeMyFood — &nbsp;<Go cls='text-danger' url='/signup' text='Register your restaurant and grow with us.'/></p>
+        <p className='d-flex justify-content-center mt-3'>© 2026 MakeMyFood — &nbsp;<Go cls='text-danger' url='/manager/signup' text='Register your restaurant and grow with us.'/></p>
     </footer>
     </>
   )

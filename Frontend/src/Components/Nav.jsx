@@ -32,12 +32,13 @@ const Nav = (prop) => {
     <>
         <nav className={`navbar navbar-expand-lg bg-body-tertiary sticky-top {prop.cls}`} data-bs-theme="dark">
             <div className="container-fluid">
-                <a onClick={()=>{}} className="navbar-brand" href="/explore">Foodie Search</a>
+                {prop.dashboard?(<a onClick={()=>{}} className="navbar-brand" href="/manager/dashboard">Dashboard</a>):(<a onClick={()=>{}} className="navbar-brand" href="/explore">Foodie Search</a>)}
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mb-2 mb-lg-0">
+                    {!prop.dashboard?(<>
                     <li className="nav-item">
                     <Link className='nav-link' to='/accounts' >My Account</Link>
                     {/* <Go cls='nav-link' url='/accounts'/> */}
@@ -51,12 +52,29 @@ const Nav = (prop) => {
                     <li className="nav-item">
                     <button className="nav-link" onClick={()=>{useFilter(false)}}>Take away Stores</button>
                     </li>
+
+
+                    </>):(<>
+                    <li className="nav-item">
+                        <Link className='nav-link' to='/manager/accounts' >My Account</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link className='nav-link' to='/manager/accounts' >My Restaurant/Store</Link>
+                    </li>
+                    <li className="nav-item">
+                    <Link className='nav-link' to='/orders' >Orders</Link>
+                    </li>
+                    <li className="nav-item">
+                    <Link className='nav-link' to='/orders' >Reviews</Link>
+                    </li>
+                    </>)
+                    }
                     
                 </ul>
-                <form className="d-flex col col-lg-0 ms-5" role="search" onSubmit={handleSearch}>
+                {!prop.dashboard?<form className="d-flex col col-lg-0 ms-5" role="search" onSubmit={handleSearch}>
                     <input className="form-control me-1" type="text" onChange={(e)=>{setItem(e.target.value)}} placeholder="Search" aria-label="Search" value={item}/>
                     <button className="btn btn-outline-danger" type="submit">🔍︎</button>
-                </form>
+                </form>:<></>}
                 </div>
             </div>
         </nav>
