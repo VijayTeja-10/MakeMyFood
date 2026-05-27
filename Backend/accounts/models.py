@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import datetime as dt
 
 # Create your models here.
 class GlobalUser(AbstractUser):
@@ -62,6 +63,7 @@ class Orders(models.Model):
     bill=models.FloatField()
     date=models.DateField(auto_now_add=True)
     paid=models.BooleanField(default=False)
+    arrival=models.DurationField(default=dt.timedelta(minutes=10))
 
 class Reviews(models.Model):
     review=models.TextField()

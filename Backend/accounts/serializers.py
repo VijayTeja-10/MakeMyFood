@@ -73,6 +73,7 @@ class ItemPullSerializer(serializers.ModelSerializer):
 class OrdersSerializer(serializers.ModelSerializer):
     Rname=serializers.SerializerMethodField()
     review=serializers.SerializerMethodField()
+    user=serializers.SerializerMethodField()
     class Meta:
         model=Orders
         fields='__all__'
@@ -82,9 +83,11 @@ class OrdersSerializer(serializers.ModelSerializer):
         qs=Reviews.objects.filter(order=obj.id).first()
         if qs:
             rv=ReviewSerializer(qs)
-            print(qs,rv.data)
+            # print(qs,rv.data)
             return rv.data['review']
         return False
+    def get_user(self,obj):
+        return [obj.buyer.username,obj.buyer.phone]
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

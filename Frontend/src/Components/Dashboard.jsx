@@ -29,7 +29,7 @@ const Dashboard = (props) => {
                     <div className='col-lg-3 col-md-4 col-sm-12 mb-3'>
                         <div className='border rounded p-3 bg-light h-100 shadow-sm'>
                             <h3 className='text-center text-danger mb-4'>Live Orders</h3>
-                            <LiveOrders />
+                            <LiveOrders seller={profile.resId}/>
                         </div>
                     </div>
                     

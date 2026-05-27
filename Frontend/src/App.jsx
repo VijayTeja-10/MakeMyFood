@@ -11,6 +11,7 @@ import AuthProvider from './Components/AuthProvider'
 import PublicRoutes from './Components/PublicRoutes'
 import Search from './Components/Search'
 import Dashboard from './Components/Dashboard'
+import RestaurantOrderHistory from './Components/RestuarantOrderHistory'
 function App() {  
   return (
     <>
@@ -27,6 +28,8 @@ function App() {
         <Route path='/manager/signup' element={<PublicRoutes> <SignUp isManager={true} /> </PublicRoutes>} />
         <Route path='/manager/dashboard' element={<PrivateRoutes> <Dashboard /> </PrivateRoutes>} />
         <Route path='/manager/accounts' element={<PrivateRoutes> <Account isManager={true} /> </PrivateRoutes>} />
+        <Route path='/restaurant/orders' element={<PrivateRoutes> <RestaurantOrderHistory /> </PrivateRoutes>} />
+        {/* <Route path='/restaurant/reviews' element={<PrivateRoutes> <RestaurantOrderHistory /> </PrivateRoutes>} /> */}
       </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -62,11 +62,11 @@ const Nav = (prop) => {
                         <Link className='nav-link' to='/manager/accounts' >My Restaurant/Store</Link>
                     </li>
                     <li className="nav-item">
-                    <Link className='nav-link' to='/orders' >Orders</Link>
+                    <Link className='nav-link' to='/restaurant/orders' >Orders&Reviews</Link>
                     </li>
-                    <li className="nav-item">
-                    <Link className='nav-link' to='/orders' >Reviews</Link>
-                    </li>
+                    {/* <li className="nav-item">
+                    <Link className='nav-link' to='/restaurant/reviews' >Reviews</Link>
+                    </li> */}
                     </>)
                     }
                     

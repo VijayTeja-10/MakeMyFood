@@ -71,7 +71,7 @@ const Items = (props) => {
         items.push({name:name,price:price,quantity:quantity})
         let orderDetails={
             "items": items,
-            "bill": bill+Number(price),
+            "bill": Number(price),
             "paid": false,
             "buyer": props.uid,
             "seller": props.rid

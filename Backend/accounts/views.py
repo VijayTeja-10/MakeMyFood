@@ -80,7 +80,11 @@ class OrdersView(viewsets.ModelViewSet):
      def pollorders(self,request):
         queryset=Orders.objects.filter(seller=request.data.get('seller',None),paid=False)
         serializer=self.get_serializer(queryset,many=True)
-        # print(request.user)
+        return Response(serializer.data)
+     @action(detail=False,methods=['post'])
+     def orderhistroy(self,request):
+        queryset=Orders.objects.filter(seller=request.data.get('seller',None),paid=True)
+        serializer=self.get_serializer(queryset,many=True)
         return Response(serializer.data)
 
 class Review(viewsets.ModelViewSet):
