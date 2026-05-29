@@ -45,7 +45,10 @@ const Restaurant = (props) => {
         <RestaurantDashboard data={resData} profile={profile} onRefresh={validate} />
         </>
     ) : (
+        <>
+        <Nav dashboard={true} />
         <RestaurantForm profile={profile} onSuccess={validate} />
+        </>
     )
 }
 

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { data, useNavigate } from 'react-router-dom'
 // import Items from './cart'
 import Nav from './Nav'
+import ArrivalModal from './ArrivalModal'
 import axiosInstance from './AxiosInstance'
 import PrivateRoutes, { Profile } from './PrivateRoutes'
 const Orders = () => {
@@ -18,6 +19,12 @@ const Orders = () => {
     const [itemId,setItemId]=useState(null)
     const [price,setPrice]=useState(0)
     const [quantity,setQuantity]=useState(0)
+
+    const [payOrderId, setPayOrderId] = useState(null)
+    const [arrivalMins, setArrivalMins] = useState(10)
+    const [orderStatus, setOrderStatus] = useState('') // 'waiting', 'confirmed', 'declined', ''
+    const [pollIntervalId, setPollIntervalId] = useState(null)
+
     const exit=()=>{
         navi('/explore')
     }
@@ -247,7 +254,18 @@ const Orders = () => {
                 <div className="card bg-info-subtle crd m-2">
                 <div className="card-header d-flex justify-content-between">
                     <button onClick={()=>{delCart(place.id)}} className='btn h4 btn-danger text-light me-auto fw-bold'>×</button>
-                    <button onClick={()=>{payBill(place.id)}} className='btn btn-danger '>Pay ₹{place.bill}</button>
+                    <button 
+                    onClick={() => { 
+                        setPayOrderId(place.id); 
+                        setOrderStatus(''); 
+                        setArrivalMins(10); 
+                    }} 
+                    className='btn btn-danger'
+                    data-bs-toggle="modal" 
+                    data-bs-target="#arrivalModal"
+                >
+                    Pay ₹{place.bill}
+                </button>
                 </div>
                 <div className="card-body">
                     <div className='d-flex justify-content-between m-2'>
@@ -276,8 +294,72 @@ const Orders = () => {
                 </div>
             )):(<></>)
         ))
-        return <div className='d-flex flex-wrap justify-content-between'>{cart}{editItems()}</div>
+        return <div className='d-flex flex-wrap justify-content-between'>{cart}{editItems()}{<ArrivalModal 
+            orderStatus={orderStatus}
+            arrivalMins={arrivalMins}
+            setArrivalMins={setArrivalMins}
+            confirmOrderRequest={confirmOrderRequest}
+            closePaymentModal={closePaymentModal}
+        />}</div>
     }
+
+    const confirmOrderRequest = async () => {
+        // If the user left it blank or entered 0, default to 1 minute
+        const finalMins = arrivalMins === '' || arrivalMins < 10 ? 10 : arrivalMins;
+
+        setOrderStatus('waiting')
+        try {
+            // Format minutes into HH:MM:SS using the validated finalMins
+            const hours = Math.floor(finalMins / 60).toString().padStart(2, '0')
+            const mins = (finalMins % 60).toString().padStart(2, '0')
+            const arrivalDuration = `${hours}:${mins}:00`
+
+            // 1. Patch the order with the arrival time
+            await axiosInstance.patch(`/orders/${payOrderId}/`, { arrival: arrivalDuration })
+
+            // 2. Start polling for acceptance
+            const interval = setInterval(async () => {
+                try {
+                    const res = await axiosInstance.get(`/orders/${payOrderId}/`)
+                    // If manager clicked "Accept", paid becomes true
+                    if (res.data.paid) {
+                        setOrderStatus('confirmed')
+                        clearInterval(interval)
+                        fetchOrders()
+                    }
+                } catch (err) {
+                    // If manager clicked "Decline", the order is deleted and API returns 404
+                    if (err.response && err.response.status === 404) {
+                        setOrderStatus('declined')
+                        clearInterval(interval)
+                        fetchOrders()
+                    }
+                }
+            }, 3000) // Poll every 3 seconds
+            
+            setPollIntervalId(interval)
+        } catch (error) {
+            console.log("Failed to process order", error)
+            alert('Something went wrong. Please try again.')
+            setOrderStatus('')
+        }
+    }
+
+    const closePaymentModal = () => {
+        if (pollIntervalId) clearInterval(pollIntervalId)
+        setPayOrderId(null)
+        setOrderStatus('')
+        setArrivalMins(10)
+        fetchOrders()
+    }
+
+
+    useEffect(() => {
+    return () => {
+        if (pollIntervalId) clearInterval(pollIntervalId)
+        }
+    }, [pollIntervalId])
+
   return (
     <><Nav />
     <div className='p-3'>

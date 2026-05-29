@@ -51,6 +51,7 @@ const Table = (props) => {
         }catch(error){console.log()}
         finally{
             fetchTables();
+            userSeats();
         }
     }
     const renderSeats=(t)=>{
@@ -85,7 +86,7 @@ const Table = (props) => {
     }
     useEffect(() => {
         userSeats()
-        }, [])
+        }, [s])
     const Switch=(s)=>{
         if(s){
             return <Items items={props.items} name={props.name} rid={props.res.id} uid={profile.id} seats={us} isRes={true}/>

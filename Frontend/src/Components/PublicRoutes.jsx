@@ -6,11 +6,13 @@ import axiosInstance from './AxiosInstance'
 const PublicRoutes = ({children}) => {
     const {isLogged}=useContext(Authorization)
     const [Go,setGo]=useState(<Navigate to='/' />)
+
     const navi=async()=>{
+      if(!isLogged){return}
       const profile= await axiosInstance.get('/users/profile/')
       return profile.data.isManager?(<Navigate to='/manager/dashboard' />): (<Navigate to='/explore' />)
     }
-    useEffect(()=>{setGo(navi())},[])
+    useEffect(()=>{setGo(navi())},[isLogged])
   return (
     !isLogged?(children):(<>{Go}</>)
   )

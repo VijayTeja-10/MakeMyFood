@@ -64,6 +64,10 @@ const Items = (props) => {
     }
 
     const handleOrder=(name,price,quantity)=>{
+        if(props.isRes && props.seats.length===0){
+            alert('Please confirm your seats. Before Adding items to cart.')
+            return
+        }
         console.log('handle order',items)
         if(!items.find(item=>item.name===name)){
             console.log('not found')
@@ -79,7 +83,7 @@ const Items = (props) => {
         if(props.isRes){orderDetails.seats=seats}
         console.log('Your Order',orderDetails)
         order(orderDetails)
-    }else{alert('Please add items that belongs to one restaurant/store!')}
+        }else{alert('Please add items that belongs to one restaurant/store!')}
     }
     
     const Instock=(instock,name,price,quantity)=>{
@@ -93,7 +97,7 @@ const Items = (props) => {
 
     useEffect(()=>{
         if(props.isRes && props.seats.length===0){
-        console.log('alerted')
+        console.log('alerted',props.isRes, props.seats)
         alert('Please confirm your seats. Before Adding items to cart.')
         }
     },[props.isRes && props.seats.length===0])

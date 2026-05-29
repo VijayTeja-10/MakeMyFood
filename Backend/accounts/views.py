@@ -103,6 +103,7 @@ class Review(viewsets.ModelViewSet):
 class UserData(viewsets.ModelViewSet):
         queryset=GlobalUser.objects.all()
         serializer_class=UserSerializer
+
         @action(detail=False,methods=['get'])
         def users(self,request):
             queryset=GlobalUser.objects.all()
@@ -115,7 +116,7 @@ class UserData(viewsets.ModelViewSet):
                 userdata=GlobalUser.objects.get(id=request.user.id)
                 data={'id':request.user.id,'username':userdata.username,'email':userdata.email,'phone':userdata.phone,'isManager':userdata.isManager}
                 if userdata.isManager:
-                    resId=Restaurant.objects.get(manager=userdata.id)
-                    data['resId']=resId.id
+                    resId=Restaurant.objects.filter(manager=userdata.id).first()
+                    if resId:data['resId']=resId.id
                 return Response(data)
         
