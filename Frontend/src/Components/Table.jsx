@@ -111,7 +111,7 @@ const Table = (props) => {
         </ul>
         {Switch(s)}
     </div>
-    </>    
+    </>
   )
 }
 

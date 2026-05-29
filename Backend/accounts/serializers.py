@@ -28,9 +28,14 @@ class TableSerializer(serializers.ModelSerializer):
     seats=serializers.SerializerMethodField()
     class Meta:
         model=Table
-        fields=['id','val','seat','seats']
+        fields=['id','val','seat','seats','restaurant']
     def get_seats(self,obj):
         return obj.seat.count() if hasattr(obj,'seat') else 0
+
+class AddTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Table
+        fields=['val','restaurant']
     
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

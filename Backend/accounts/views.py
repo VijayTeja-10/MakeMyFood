@@ -8,7 +8,7 @@ from .models import Restaurant,GlobalUser,Menu,Table,Seat,Orders,Reviews
 from .serializers import (RestaurantSerializer,RegisterSerializer,UserSerializer,
                           DishSerializer,TableSerializer,SeatSerializer,
                           ItemSerializer,ItemPullSerializer,OrdersSerializer,
-                          ReviewSerializer,UserseatSerializer)
+                          ReviewSerializer,UserseatSerializer,AddTableSerializer)
 
 # Create your views here.
 
@@ -19,6 +19,12 @@ class RestaurantRegisterView(viewsets.ModelViewSet):
 class RestaurantsView(viewsets.ModelViewSet):
     queryset=Restaurant.objects.all()
     serializer_class=RestaurantSerializer
+    @action(detail=False,methods=['post'])
+    def PullDetails(self,request):
+        searchPlace=Restaurant.objects.filter(manager=request.data.get('manager',None)).first()
+        serializer=RestaurantSerializer(searchPlace)
+        # print(serializer.data)
+        return Response(serializer.data)
 
 class MenuView(viewsets.ModelViewSet):
     queryset=Menu.objects.all()
@@ -46,10 +52,13 @@ class MenuView(viewsets.ModelViewSet):
 class TableView(viewsets.ModelViewSet):
     queryset=Table.objects.all()
     serializer_class=TableSerializer
-    # @action(detail=False,methods=['get'])
-    # def PullData(self,request,pk=None):
-    #      tables=Restaurant.objects.get(id=pk)
-        #  serailizer=in
+    @action(detail=False,methods=['post'])
+    def AddTable(self,request):
+        serializer=AddTableSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class SeatPolling(viewsets.ModelViewSet):
     queryset=Seat.objects.all()

@@ -59,7 +59,7 @@ const Nav = (prop) => {
                         <Link className='nav-link' to='/manager/accounts' >My Account</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className='nav-link' to='/manager/accounts' >My Restaurant/Store</Link>
+                        <Link className='nav-link' to='/manager/restaurant' >My Restaurant/Store</Link>
                     </li>
                     <li className="nav-item">
                     <Link className='nav-link' to='/restaurant/orders' >Orders&Reviews</Link>

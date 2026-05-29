@@ -12,6 +12,7 @@ import PublicRoutes from './Components/PublicRoutes'
 import Search from './Components/Search'
 import Dashboard from './Components/Dashboard'
 import RestaurantOrderHistory from './Components/RestuarantOrderHistory'
+import Restaurant from './Components/Restaurant'
 function App() {  
   return (
     <>
@@ -29,7 +30,7 @@ function App() {
         <Route path='/manager/dashboard' element={<PrivateRoutes> <Dashboard /> </PrivateRoutes>} />
         <Route path='/manager/accounts' element={<PrivateRoutes> <Account isManager={true} /> </PrivateRoutes>} />
         <Route path='/restaurant/orders' element={<PrivateRoutes> <RestaurantOrderHistory /> </PrivateRoutes>} />
-        {/* <Route path='/restaurant/reviews' element={<PrivateRoutes> <RestaurantOrderHistory /> </PrivateRoutes>} /> */}
+        <Route path='/manager/restaurant/' element={<PrivateRoutes> <Restaurant /> </PrivateRoutes>} />
       </Routes>
       </BrowserRouter>
     </AuthProvider>
