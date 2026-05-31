@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import Go from './Go'
 import Nav from './Nav'
 import { Profile } from './PrivateRoutes'
+import axiosInstance from './AxiosInstance'
 
 const Display = (props) => {
     const [mainScreen,Setmain]=useState(true)
@@ -24,7 +25,7 @@ const Display = (props) => {
     
     const fetch= async ()=>{
         try{
-        const response= await axios.get('http://127.0.0.1:8000/api/restaurants/')
+        const response= await axiosInstance.get('/restaurants/')
         console.log('response => ',response.data)
         Setrest(response.data)
         }catch(error){
@@ -67,7 +68,6 @@ const Display = (props) => {
             <div className='d-flex justify-content-around flex-wrap'>
                 {
                     FoodPlaces.map((place)=>(
-                        <>
                             <div key={place.id} className="card crd m-3">
                             <img src={place.image} className="card-img-top object-fit-cover border rounded cim" alt="..."></img>
                             <div className="card-body">
@@ -79,7 +79,6 @@ const Display = (props) => {
                                 </div>
                             </div>
                             </div>
-                        </>
                 ))}
                 <div class="offcanvas offcanvas-bottom" tabindex="-1" data-bs-theme="dark" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
                     <div class="offcanvas-header">

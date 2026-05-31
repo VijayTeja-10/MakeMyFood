@@ -1,4 +1,9 @@
+import datetime
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import generics,viewsets,status
@@ -13,20 +18,51 @@ from .serializers import (RestaurantSerializer,RegisterSerializer,UserSerializer
 # Create your views here.
 
 class RestaurantRegisterView(viewsets.ModelViewSet):
+    permission_classes=[IsAuthenticated]
     queryset=Restaurant.objects.all()
     serializer_class=RegisterSerializer
 
 class RestaurantsView(viewsets.ModelViewSet):
     queryset=Restaurant.objects.all()
     serializer_class=RestaurantSerializer
+    permission_classes=[IsAuthenticated]
     @action(detail=False,methods=['post'])
     def PullDetails(self,request):
         searchPlace=Restaurant.objects.filter(manager=request.data.get('manager',None)).first()
         serializer=RestaurantSerializer(searchPlace)
         # print(serializer.data)
         return Response(serializer.data)
+    
+    @action(detail=True,methods=['get'])
+    def livetables(self,request,pk=None):
+        place=self.get_object()
+        tables=Table.objects.filter(restaurant=place)
+        serializer=TableSerializer(tables,many=True)
+        return Response({'table':serializer.data},status=status.HTTP_200_OK)
+    
+    @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        # print('cache')
+        return super().list(request, *args, **kwargs)
+    
+    @method_decorator(cache_page(60*60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+    
+    def perform_update(self, serializer):
+        cache.clear()
+        return super().perform_update(serializer)
+    
+    def perform_destroy(self, instance):
+        cache.clear()
+        return super().perform_destroy(instance)
+    
+    def perform_create(self, serializer):
+        cache.clear()
+        return super().perform_create(serializer)
 
 class MenuView(viewsets.ModelViewSet):
+    permission_classes=[IsAuthenticated]
     queryset=Menu.objects.all()
     serializer_class=DishSerializer
     @action(detail=False,methods=['post'])
@@ -48,8 +84,21 @@ class MenuView(viewsets.ModelViewSet):
         print('processing')
         print(request.data['item'], serializer.data)
         return Response(serializer.data)
+    
+    def perform_update(self, serializer):
+        cache.clear()
+        return super().perform_update(serializer)
+    
+    def perform_destroy(self, instance):
+        cache.clear()
+        return super().perform_destroy(instance)
+    
+    def perform_create(self, serializer):
+        cache.clear()
+        return super().perform_create(serializer)
 
 class TableView(viewsets.ModelViewSet):
+    permission_classes=[IsAuthenticated]
     queryset=Table.objects.all()
     serializer_class=TableSerializer
     @action(detail=False,methods=['post'])
@@ -61,6 +110,7 @@ class TableView(viewsets.ModelViewSet):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class SeatPolling(viewsets.ModelViewSet):
+    permission_classes=[IsAuthenticated]
     queryset=Seat.objects.all()
     serializer_class=SeatSerializer
     @action(detail=False,methods=['get'])
@@ -71,6 +121,7 @@ class SeatPolling(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class OrdersView(viewsets.ModelViewSet):
+     permission_classes=[IsAuthenticated]
      queryset=Orders.objects.all()
      serializer_class=OrdersSerializer
      @action(detail=False,methods=['get'])
@@ -87,7 +138,7 @@ class OrdersView(viewsets.ModelViewSet):
         return Response(serializer.data)
      @action(detail=False,methods=['post'])
      def pollorders(self,request):
-        queryset=Orders.objects.filter(seller=request.data.get('seller',None),paid=False)
+        queryset=Orders.objects.filter(seller=request.data.get('seller',None),paid=False,arrival__gte=datetime.timedelta(minutes=10))
         serializer=self.get_serializer(queryset,many=True)
         return Response(serializer.data)
      @action(detail=False,methods=['post'])
@@ -97,6 +148,7 @@ class OrdersView(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class Review(viewsets.ModelViewSet):
+     permission_classes=[IsAuthenticated]
      queryset=Reviews.objects.all()
      serializer_class=ReviewSerializer
 
@@ -119,4 +171,3 @@ class UserData(viewsets.ModelViewSet):
                     resId=Restaurant.objects.filter(manager=userdata.id).first()
                     if resId:data['resId']=resId.id
                 return Response(data)
-        

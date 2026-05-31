@@ -22,7 +22,7 @@ const RestaurantForm = ({ profile, onSuccess }) => {
         }
 
         try {
-            await axiosInstance.post('/register/', restaurantData)
+            await axiosInstance.post('/registration/', restaurantData)
             setError({})
             alert('Your setup has been registered successfully!')
             onSuccess() // Trigger the orchestrator to fetch and show the dashboard

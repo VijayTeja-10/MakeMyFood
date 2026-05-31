@@ -32,7 +32,7 @@ const Nav = (prop) => {
     <>
         <nav className={`navbar navbar-expand-lg bg-body-tertiary sticky-top {prop.cls}`} data-bs-theme="dark">
             <div className="container-fluid">
-                {prop.dashboard?(<a onClick={()=>{}} className="navbar-brand" href="/manager/dashboard">Dashboard</a>):(<a onClick={()=>{}} className="navbar-brand" href="/explore">Foodie Search</a>)}
+                {prop.dashboard?(<a onClick={()=>{}} className="navbar-brand" href="/manager/dashboard">Live Dashboard</a>):(<a onClick={()=>{}} className="navbar-brand" href="/explore">Foodie Search</a>)}
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
                 </button>

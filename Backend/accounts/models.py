@@ -63,7 +63,7 @@ class Orders(models.Model):
     bill=models.FloatField()
     date=models.DateField(auto_now_add=True)
     paid=models.BooleanField(default=False)
-    arrival=models.DurationField(default=dt.timedelta(minutes=10))
+    arrival=models.DurationField(default=dt.timedelta(minutes=0))
 
 class Reviews(models.Model):
     review=models.TextField()

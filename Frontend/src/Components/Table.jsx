@@ -11,7 +11,7 @@ const Table = (props) => {
     const [us, setus] = useState([])
     const fetchTables=async()=>{
         try{
-            const res=await axiosInstance.get(`/restaurants/${props.res.id}/`)
+            const res=await axiosInstance.get(`/restaurants/${props.res.id}/livetables`)
             setTables(res.data.table)
         }catch(error){console.log()}
     }

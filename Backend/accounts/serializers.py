@@ -104,11 +104,26 @@ class UserSerializer(serializers.ModelSerializer):
         model=GlobalUser
         fields='__all__'
         extra_kwargs={'password':{'write_only':True}}
+    
+    def check_pass(self,password):
+        if not password or (len(password)<8): return False
+        c1,c2,c3=False,False,False
+
+        for c in password:
+            if not c.isalnum() and not c3:c3=True
+            if c.isalpha() and not c2:c2=True
+            if c.isdigit() and not c1:c1=True
+        return c1 and c2 and c3
 
     def create(self,validated_data): #ensures password hashing
-        return GlobalUser.objects.create_user(**validated_data)
+        if self.check_pass(validated_data.get('password',None)):
+            return GlobalUser.objects.create_user(**validated_data)
+        raise serializers.ValidationError({'password':'Your password must be more than 8 characters long, contain letters and numbers, and special characters.'})
     
     def update(self, instance, validated_data):
         password=validated_data.pop('password',None)
-        if password:instance.set_password(password) #built in
+        if password and self.check_pass(password):
+            instance.set_password(password) #built in
+        else:
+            raise serializers.ValidationError({'password':'Your password must be more than 8 characters long, contain letters and numbers, and special characters.'})
         return super().update(instance, validated_data) #updates other fields along with password

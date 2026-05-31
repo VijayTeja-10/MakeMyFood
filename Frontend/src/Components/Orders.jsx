@@ -261,7 +261,7 @@ const Orders = () => {
                         setArrivalMins(10); 
                     }} 
                     className='btn btn-danger'
-                    data-bs-toggle="modal" 
+                    data-bs-toggle="modal"
                     data-bs-target="#arrivalModal"
                 >
                     Pay ₹{place.bill}

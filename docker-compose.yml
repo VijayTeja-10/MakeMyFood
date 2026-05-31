@@ -1,0 +1,49 @@
+services:
+  #db setup
+  db:
+    image: mysql:8.0
+    container_name: food_mysql
+    # These credentials MUST match with Django settings.py
+    environment:
+      MYSQL_DATABASE: food_db
+      MYSQL_USER: food_user
+      MYSQL_PASSWORD: food_password
+      MYSQL_ROOT_PASSWORD: root_super_password
+    
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  #caching setup
+  redis:
+    image: redis:alpine
+    container_name: local-redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./Backend
+    container_name: food_backend
+    ports:
+      - "8000:8000"
+    volumes: # Syncs your live code edits into the container
+      - ./Backend:/app
+    depends_on:
+    # Tells Docker: "Do not start Django until MySQL and Redis are running"
+      - db
+      - redis
+
+  frontend:
+    build: ./Frontend
+    container_name: food_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

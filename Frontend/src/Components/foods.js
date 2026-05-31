@@ -8,6 +8,7 @@ const FoodPlaces = [
     "tables": 20,
     "seats": 4,
     "items": [
+      
       {
         "name": "Chicken Dum Biryani",
         "img": "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=800&q=80",
