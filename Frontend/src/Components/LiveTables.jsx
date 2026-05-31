@@ -5,12 +5,13 @@ import { Profile } from './PrivateRoutes'
 const LiveTables = (props) => {
     const { profile } = useContext(Profile)
     const [tables, setTables] = useState([])
+    
 
     const fetchTables = async () => {
         // Fallback check in case props.res is undefined on initial load
         if (!props.res) return; 
         try {
-            const res = await axiosInstance.get(`/restaurants/${props.res}/`)
+            const res = await axiosInstance.get(`/restaurants/${props.res}/livetables`)
             setTables(res.data.table)
         } catch (error) {
             console.log(error)
