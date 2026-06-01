@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { data, useNavigate } from 'react-router-dom'
+import { data, Link, useNavigate } from 'react-router-dom'
 // import Items from './cart'
 import Nav from './Nav'
 import ArrivalModal from './ArrivalModal'
@@ -201,7 +201,9 @@ const Orders = () => {
                 <div className="card-body">
                     <div className='d-flex justify-content-between m-2'>
                         <div>
-                            <h5 className="card-title">{place.Rname}</h5>
+                            <h5 className="card-title">
+                                <a className='card-title' href={place.loc} target='_blank'>{place.Rname}</a>
+                            </h5>
                             {place.seats?(<p className="card-text">You've dined here.</p>):(<p className="card-text">You've picked here.</p>)}
                         </div>
                     </div>

@@ -71,7 +71,9 @@ const Display = (props) => {
                             <div key={place.id} className="card crd m-3">
                             <img src={place.image} className="card-img-top object-fit-cover border rounded cim" alt="..."></img>
                             <div className="card-body">
-                                <h5 className="card-title">{place.name}</h5>
+                                <h5 className="card-title">
+                                    <a className='text-decoration-none text-dark' href={place.location} target="_blank" rel="noopener noreferrer">{place.name}</a>
+                                </h5>
                                 <p className="card-text">{place.desc} <br /><b>Phone :</b>{place.phone}</p>
                                 <div className="d-flex justify-content-between">
                                     <button onClick={()=>{showMenu(place.menu,place.name,place.isRes,place)}} className="btn btn-warning">{Menu(place.isRes)}</button>

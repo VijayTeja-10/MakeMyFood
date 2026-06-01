@@ -79,11 +79,14 @@ class OrdersSerializer(serializers.ModelSerializer):
     Rname=serializers.SerializerMethodField()
     review=serializers.SerializerMethodField()
     user=serializers.SerializerMethodField()
+    loc=serializers.SerializerMethodField()
     class Meta:
         model=Orders
         fields='__all__'
     def get_Rname(self,obj):
         return obj.seller.name
+    def get_loc(self,obj):
+        return obj.seller.location
     def get_review(self,obj):
         qs=Reviews.objects.filter(order=obj.id).first()
         if qs:
